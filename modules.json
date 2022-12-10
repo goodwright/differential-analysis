@@ -5,6 +5,11 @@
     "https://github.com/goodwright/flow-nf.git": {
       "modules": {
         "goodwright": {
+          "sample/diff_samplesheet_check": {
+            "branch": "dev",
+            "git_sha": "43dd41acc867c4982f4cde2fc6c1ebb2550d375e",
+            "installed_by": ["modules"]
+          },
           "util/logging": {
             "branch": "dev",
             "git_sha": "a86151c42d09cfa2e707008d32233054aabe5073",
