@@ -8,6 +8,7 @@ process SAMPLE_DIFF_SAMPLESHEET_CHECK {
     input:
     path samplesheet
     path counts
+    val count_sep
 
     output:
     path '*.csv'        , emit: csv

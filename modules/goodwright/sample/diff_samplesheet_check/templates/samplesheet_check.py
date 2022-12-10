@@ -35,7 +35,7 @@ def dump_versions(process_name):
         out_f.write("    python: " + platform.python_version() + "\n")
 
 
-def check_samplesheet(process_name, samplesheet, counts, output):
+def check_samplesheet(process_name, samplesheet, counts, count_sep, output):
     """
     This function checks that the samplesheet follows the following structure:
 
@@ -142,13 +142,13 @@ def check_samplesheet(process_name, samplesheet, counts, output):
     # Load sample ids from counts file
     with open(counts, "r") as fin:
         # Load header
-        header = [x.strip('"') for x in fin.readline().strip().split(",")]
+        count_header = [x.strip('"') for x in fin.readline().strip().split(count_sep)]
 
         # Strip first column
-        header = header[1:]
+        count_header = count_header[1:]
 
         # Collect unique sample ids
-        for sample in header:
+        for sample in count_header:
             count_dict[sample] = True
 
     # Check that all samples in samplesheet are present in counts file
@@ -184,7 +184,8 @@ if __name__ == "__main__":
     parser.add_argument("--process_name", default="!{process_name}")
     parser.add_argument("--samplesheet", default="!{samplesheet}")
     parser.add_argument("--counts", default="!{counts}")
+    parser.add_argument("--count-sep", default="!{count_sep}")
     parser.add_argument("--output", default="!{output}")
     args = parser.parse_args()
 
-    check_samplesheet(args.process_name, args.samplesheet, args.counts, args.output)
+    check_samplesheet(args.process_name, args.samplesheet, args.counts, args.count_sep, args.output)

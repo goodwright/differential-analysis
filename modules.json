@@ -7,7 +7,7 @@
         "goodwright": {
           "sample/diff_samplesheet_check": {
             "branch": "dev",
-            "git_sha": "43dd41acc867c4982f4cde2fc6c1ebb2550d375e",
+            "git_sha": "b9500319c5ba5c5e94a31a02a2e78d4a38d6ab32",
             "installed_by": ["modules"]
           },
           "util/logging": {
