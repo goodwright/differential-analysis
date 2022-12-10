@@ -1,0 +1,17 @@
+{
+  "name": "goodwright/differential-analysis",
+  "homePage": "https://github.com/goodwright/differential-analysis",
+  "repos": {
+    "https://github.com/goodwright/flow-nf.git": {
+      "modules": {
+        "goodwright": {
+          "util/logging": {
+            "branch": "dev",
+            "git_sha": "a86151c42d09cfa2e707008d32233054aabe5073",
+            "installed_by": ["modules"]
+          }
+        }
+      }
+    }
+  }
+}
