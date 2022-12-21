@@ -151,6 +151,7 @@ workflow DIFF_ANALYSIS {
     }
     //EXAMPLE CHANNEL STRUCT: [sample_id:RAP1_IAA_30M_REP1, condition:B]
     //ch_meta | view
+    //SAMPLE_DIFF_SAMPLESHEET_CHECK.out.csv | view
 
     if(params.run_diff_analysis) {
         
