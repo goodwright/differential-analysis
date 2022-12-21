@@ -63,7 +63,7 @@ def check_samplesheet(process_name, samplesheet, counts, count_sep, output):
             print("ERROR: Please check samplesheet header -> {} != {}".format(",".join(header), ",".join(HEADER)))
             sys.exit(1)
 
-        if header[: MIN_COLS] != HEADER:
+        if header[:MIN_COLS] != HEADER:
             print("ERROR: Please check samplesheet header -> {} != {}".format(",".join(header), ",".join(HEADER)))
             sys.exit(1)
 
@@ -100,7 +100,7 @@ def check_samplesheet(process_name, samplesheet, counts, count_sep, output):
             if ACTUAL_HEADER_LEN > MIN_COLS:
                 sample, condition, factor = lspl[: (MIN_COLS + 1)]
             else:
-                sample, condition = lspl[: MIN_COLS]
+                sample, condition = lspl[:MIN_COLS]
 
             # Check for spaces
             if sample:
@@ -174,7 +174,7 @@ def check_samplesheet(process_name, samplesheet, counts, count_sep, output):
             fout.write(",".join(ouput_header) + "\n")
 
             for sample in sorted(sample_dict.keys()):
-                    fout.write(",".join(sample_dict[sample]) + "\n")
+                fout.write(",".join(sample_dict[sample]) + "\n")
 
 
 if __name__ == "__main__":
