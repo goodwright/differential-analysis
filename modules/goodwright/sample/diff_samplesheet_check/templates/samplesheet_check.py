@@ -156,10 +156,10 @@ def check_samplesheet(process_name, samplesheet, counts, count_sep, output):
         if sample not in count_dict.keys():
             print_error("Sample {} not found in counts file!".format(sample))
 
-    # Check that all samples in counts file are present in samplesheet
-    for sample in count_dict.keys():
-        if sample not in sample_dict.keys():
-            print_error("Sample {} in counts file not found in samplesheet!".format(sample))
+    # # Check that all samples in counts file are present in samplesheet
+    # for sample in count_dict.keys():
+    #     if sample not in sample_dict.keys():
+    #         print_error("Sample {} in counts file not found in samplesheet!".format(sample))
 
     # Calculate output header
     ouput_header = ["sample_id", "condition"]

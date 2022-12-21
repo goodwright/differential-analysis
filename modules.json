@@ -7,7 +7,7 @@
         "goodwright": {
           "r/deseq2": {
             "branch": "dev",
-            "git_sha": "e6f2998babd75d4e0180385a361906f20a4e809e",
+            "git_sha": "cf1ac1f10dd4502218bb334b3b7c46e71205d074",
             "installed_by": ["modules"]
           },
           "r/deseq2_plots": {
@@ -22,7 +22,7 @@
           },
           "sample/diff_samplesheet_check": {
             "branch": "dev",
-            "git_sha": "f9c6d7a8b342f0561c74980d81b21df00cf85ebd",
+            "git_sha": "345bddfb56c2c0d7e1be355feb885079e7017396",
             "installed_by": ["modules"]
           },
           "util/logging": {

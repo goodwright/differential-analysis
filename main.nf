@@ -15,7 +15,7 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { summary_log     } from './modules/goodwright/util/logging/main'
+include { summary_log } from './modules/goodwright/util/logging/main'
 // include { multiqc_summary } from './modules/goodwright/util/logging/main'
 
 /*
@@ -91,6 +91,9 @@ ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
 //
 
 include { SAMPLE_DIFF_SAMPLESHEET_CHECK } from './modules/goodwright/sample/diff_samplesheet_check/main'
+include { R_DESEQ2                      } from './modules/goodwright/r/deseq2/main'
+include { R_DESEQ2_PLOTS                } from './modules/goodwright/r/deseq2_plots/main'
+include { R_PCAEXPLORER                 } from './modules/goodwright/r/pcaexplorer/main'
 // include { DUMP_SOFTWARE_VERSIONS } from './modules/goodwright/dump_software_versions/main'
 
 //
@@ -154,6 +157,40 @@ workflow DIFF_ANALYSIS {
     //SAMPLE_DIFF_SAMPLESHEET_CHECK.out.csv | view
 
     if(params.run_diff_analysis) {
+        /*
+        * CHANNEL: Create channel from samplesheet
+        */
+        ch_design = SAMPLE_DIFF_SAMPLESHEET_CHECK.out.csv
+            .collect()
+            .map { ["", it]}
+        //ch_design | view
+
+        /*
+        * CHANNEL: Create channel for all against all analysis
+        *         but filter for only the conditions specified
+        */
+        ch_comparison_set = ch_meta
+            .map { it[params.contrast_column] }
+            .unique()
+        //ch_comparison_set | view
+
+        ch_all_comparisons = ch_comparison_set
+            .combine(ch_comparison_set)
+            .filter { it[0] != it[1] }
+        //ch_all_comparisons | view
+
+        /*
+        * MODULE: Run deseq2
+        */
+        R_DESEQ2 (
+            ch_design.collect(),
+            ch_counts,
+            params.contrast_column,
+            ch_all_comparisons.map { it[0] },
+            ch_all_comparisons.map { it[1] },
+            params.blocking_factors
+        )
+        ch_versions = ch_versions.mix(R_DESEQ2.out.versions)
         
     }
 
