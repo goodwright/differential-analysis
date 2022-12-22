@@ -16,7 +16,6 @@ nextflow.enable.dsl = 2
 */
 
 include { summary_log } from './modules/goodwright/util/logging/main'
-// include { multiqc_summary } from './modules/goodwright/util/logging/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,13 +45,6 @@ for (param in check_param_list) {
     }
 }
 
-// // Check non-manditory input parameters to see if the files exist if they have been specified
-// check_param_list = [
-//     params.target_genome_index,
-//     params.smrna_genome_index
-// ]
-// for (param in check_param_list) { if (param) { file(param, checkIfExists: true) } }
-
 // Stage dummy file to be used as an optional input where required
 ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
 
@@ -65,8 +57,6 @@ comparisons = params.comparisons ? params.comparisons.split(':').collect{ it.tri
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// ch_multiqc_config = file("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT LOCAL MODULES/SUBWORKFLOWS
@@ -76,8 +66,6 @@ comparisons = params.comparisons ? params.comparisons.split(':').collect{ it.tri
 //
 // MODULEs
 //
-
-// include { MULTIQC } from './modules/local/multiqc'
 
 //
 // SUBWORKFLOWS
@@ -97,7 +85,7 @@ include { SAMPLE_DIFF_SAMPLESHEET_CHECK } from './modules/goodwright/sample/diff
 include { R_DESEQ2                      } from './modules/goodwright/r/deseq2/main'
 include { R_DESEQ2_PLOTS                } from './modules/goodwright/r/deseq2_plots/main'
 include { R_PCAEXPLORER                 } from './modules/goodwright/r/pcaexplorer/main'
-// include { DUMP_SOFTWARE_VERSIONS } from './modules/goodwright/dump_software_versions/main'
+include { DUMP_SOFTWARE_VERSIONS        } from './modules/goodwright/dump_software_versions/main'
 
 //
 // SUBWORKFLOWS
@@ -126,16 +114,10 @@ include { R_PCAEXPLORER                 } from './modules/goodwright/r/pcaexplor
 workflow DIFF_ANALYSIS {
     // Init
     ch_versions = Channel.empty()
-    // ch_target_genome_index = []
-    // ch_smrna_genome_index  = []
 
     // Prepare manditory params into channels 
     ch_samplesheet = file(params.samplesheet, checkIfExists: true)
     ch_counts      = file(params.counts, checkIfExists: true)
-
-    // // Prepare non-manditory params into channels
-    // if(params.target_genome_index) { ch_target_genome_index = file(params.target_genome_index, checkIfExists: true) }
-    // if(params.smrna_genome_index)  { ch_smrna_genome_index = file(params.smrna_genome_index, checkIfExists: true) }
 
     ch_meta = Channel.empty()
     if(params.run_input_check) {
@@ -212,37 +194,26 @@ workflow DIFF_ANALYSIS {
             params.blocking_factors
         )
         ch_versions = ch_versions.mix(R_DESEQ2_PLOTS.out.versions)
+
+        /*
+        * MODULE: Run pcaexplorer
+        */
+        R_PCAEXPLORER (
+            R_DESEQ2.out.rdata,
+            params.contrast_column,
+            ch_comparisons.map { it[0] },
+            ch_comparisons.map { it[1] },
+            params.blocking_factors
+        )
+        ch_versions = ch_versions.mix(R_PCAEXPLORER.out.versions)
     }
 
-
-
-    // if(params.run_reporting) {
-    //     /*
-    //     * MODULE: Collect software versions
-    //     */
-    //     DUMP_SOFTWARE_VERSIONS (
-    //         ch_versions.unique().collectFile()
-    //     )
-
-    //     /*
-    //     * MODULE: Run multiqc
-    //     */
-    //     workflow_summary    = multiqc_summary(workflow, params)
-    //     ch_workflow_summary = Channel.value(workflow_summary)
-
-    //     MULTIQC (
-    //         ch_multiqc_config,
-    //         DUMP_SOFTWARE_VERSIONS.out.mqc_yml.collect(),
-    //         DUMP_SOFTWARE_VERSIONS.out.mqc_unique_yml.collect(),
-    //         ch_workflow_summary.collectFile(name: "workflow_summary_mqc.yml"),
-    //         FASTQC_TRIMGALORE.out.fastqc_zip.collect{it[1]}.ifEmpty([]),
-    //         FASTQC_TRIMGALORE.out.fastqc_trim_zip.collect{it[1]}.ifEmpty([]),
-    //         FASTQC_TRIMGALORE.out.trim_log.collect{it[1]}.ifEmpty([]),
-    //         ch_bt_log.collect{it[1]}.ifEmpty([]),
-    //         ch_star_log.collect{it[1]}.ifEmpty([]),
-    //         CLIPSEQ_CLIPQC.out.tsv.collect().ifEmpty([])
-    //     )
-    // }
+    /*
+    * MODULE: Collect software versions
+    */
+    DUMP_SOFTWARE_VERSIONS (
+        ch_versions.unique().collectFile()
+    )
 }
 
 /*

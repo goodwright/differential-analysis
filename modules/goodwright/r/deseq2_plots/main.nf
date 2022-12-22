@@ -1,5 +1,5 @@
 process R_DESEQ2_PLOTS {
-    tag "$meta"
+    tag "${contrast}:${reference}_${treatment}"
     label 'process_medium'
 
     conda (params.enable_conda ? "bioconda::bioconductor-deseq2=1.34.0" : null)

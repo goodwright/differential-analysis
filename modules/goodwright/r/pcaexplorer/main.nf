@@ -1,5 +1,5 @@
 process R_PCAEXPLORER {
-    tag "$meta"
+    tag "${contrast}:${reference}_${treatment}"
     label 'process_medium'
 
     conda (params.enable_conda ? "bioconda::bioconductor-pcaexplorer=2.24.0" : null)

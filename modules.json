@@ -5,6 +5,11 @@
     "https://github.com/goodwright/flow-nf.git": {
       "modules": {
         "goodwright": {
+          "dump_software_versions": {
+            "branch": "dev",
+            "git_sha": "f9c6d7a8b342f0561c74980d81b21df00cf85ebd",
+            "installed_by": ["modules"]
+          },
           "r/deseq2": {
             "branch": "dev",
             "git_sha": "cf1ac1f10dd4502218bb334b3b7c46e71205d074",
@@ -12,12 +17,12 @@
           },
           "r/deseq2_plots": {
             "branch": "dev",
-            "git_sha": "e6f2998babd75d4e0180385a361906f20a4e809e",
+            "git_sha": "21aa5da4c49cf0088447fa81f5e10bf66e3f0e16",
             "installed_by": ["modules"]
           },
           "r/pcaexplorer": {
             "branch": "dev",
-            "git_sha": "e6f2998babd75d4e0180385a361906f20a4e809e",
+            "git_sha": "21aa5da4c49cf0088447fa81f5e10bf66e3f0e16",
             "installed_by": ["modules"]
           },
           "sample/diff_samplesheet_check": {
