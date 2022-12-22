@@ -56,6 +56,9 @@ for (param in check_param_list) {
 // Stage dummy file to be used as an optional input where required
 ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
 
+// Collect comparisons if any specified
+comparisons = params.comparisons ? params.comparisons.split(':').collect{ it.trim() } : null
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     CONFIG FILES
@@ -174,10 +177,16 @@ workflow DIFF_ANALYSIS {
             .unique()
         //ch_comparison_set | view
 
-        ch_all_comparisons = ch_comparison_set
+        ch_comparisons = ch_comparison_set
             .combine(ch_comparison_set)
             .filter { it[0] != it[1] }
-        //ch_all_comparisons | view
+        //ch_comparisons | view
+
+        if( comparisons ) {
+            ch_comparisons = ch_comparisons
+                .filter { ( it[0] + "_" + it[1] )  in comparisons }
+        }
+        //ch_comparisons | view
 
         /*
         * MODULE: Run deseq2
@@ -186,12 +195,23 @@ workflow DIFF_ANALYSIS {
             ch_design.collect(),
             ch_counts,
             params.contrast_column,
-            ch_all_comparisons.map { it[0] },
-            ch_all_comparisons.map { it[1] },
+            ch_comparisons.map { it[0] },
+            ch_comparisons.map { it[1] },
             params.blocking_factors
         )
         ch_versions = ch_versions.mix(R_DESEQ2.out.versions)
-        
+
+        /*
+        * MODULE: Run deseq2 plots
+        */
+        R_DESEQ2_PLOTS (
+            R_DESEQ2.out.rdata,
+            params.contrast_column,
+            ch_comparisons.map { it[0] },
+            ch_comparisons.map { it[1] },
+            params.blocking_factors
+        )
+        ch_versions = ch_versions.mix(R_DESEQ2_PLOTS.out.versions)
     }
 
 
