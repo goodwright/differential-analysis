@@ -49,7 +49,10 @@ for (param in check_param_list) {
 ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
 
 // Collect comparisons if any specified
-comparisons = params.comparisons ? params.comparisons.split(':').collect{ it.trim() } : null
+comparisons = null
+if (params.comparisons != "all") {
+    comparisons = params.comparisons.split(':').collect{ it.trim() }
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
