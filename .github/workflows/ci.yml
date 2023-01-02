@@ -79,7 +79,6 @@ jobs:
           wget -qO- https://code.askimed.com/install/nf-test | bash
           sudo mv nf-test /usr/local/bin/
 
-
       - name: Run nf-test
         run: |
           nf-test test \
