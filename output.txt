@@ -1,0 +1,234 @@
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.R_sessionInfo.log").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.R_sessionInfo.log").md5 == "78b44e4154e6d7f81bbddb5153982647"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.deseq2.ma.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.deseq2.ma.png").md5 == "aad53c39d3d665b37fee80d62a47a043"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.pcaexp.pca.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.pcaexp.pca.png").md5 == "a42656558193c66b81b7d740c488c006"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.pcaexp.scree.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.pcaexp.scree.png").md5 == "f91ae93f85e280277ab8872eddf6e501"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.deseq2.sizefactors.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.deseq2.sizefactors.tsv").md5 == "0a3f749c2f8a7817819d2f70e1e24c46"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.normalised_counts.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.normalised_counts.tsv").md5 == "98b790f910b861d079ed8df2319667b1"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.deseq2.dispersion.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.deseq2.dispersion.png").md5 == "11dcb0178a50dd6db8b2e95261ec8917"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.pcaexp.genes_pca.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.pcaexp.genes_pca.png").md5 == "21cc93a406368ab3b92d3faf529984af"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.dds.rld.rds").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.dds.rld.rds").md5 == "2e002cf5da4d61036291651f7fb9d5ae"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.pcaexp.corr.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.pcaexp.corr.png").md5 == "7dee71da729e125b9b1bd8d33852ff92"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.deseq2.results.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.deseq2.results.tsv").md5 == "83e75f4ca8a44f6bee15f3ea9a10e659"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.pcaexp.loadings.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_B/condition-C-B.pcaexp.loadings.png").md5 == "3fdce72c7df5ac488d6348bcfbf35fe3"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.deseq2.sizefactors.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.deseq2.sizefactors.tsv").md5 == "0a3f749c2f8a7817819d2f70e1e24c46"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.pcaexp.genes_pca.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.pcaexp.genes_pca.png").md5 == "21cc93a406368ab3b92d3faf529984af"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.dds.rld.rds").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.dds.rld.rds").md5 == "2e002cf5da4d61036291651f7fb9d5ae"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.pcaexp.pca.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.pcaexp.pca.png").md5 == "0be02f219d230e4e56168ad23802eb51"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.pcaexp.scree.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.pcaexp.scree.png").md5 == "ab518ec0fa241ee4596cb6b29fae7025"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.pcaexp.corr.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.pcaexp.corr.png").md5 == "7dee71da729e125b9b1bd8d33852ff92"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.deseq2.ma.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.deseq2.ma.png").md5 == "aad53c39d3d665b37fee80d62a47a043"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.pcaexp.loadings.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.pcaexp.loadings.png").md5 == "3fdce72c7df5ac488d6348bcfbf35fe3"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.normalised_counts.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.normalised_counts.tsv").md5 == "98b790f910b861d079ed8df2319667b1"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.R_sessionInfo.log").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.R_sessionInfo.log").md5 == "78b44e4154e6d7f81bbddb5153982647"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.deseq2.dispersion.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.deseq2.dispersion.png").md5 == "11dcb0178a50dd6db8b2e95261ec8917"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.deseq2.results.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_A/condition-B-A.deseq2.results.tsv").md5 == "fee893c0025171ec5ddff5f9f37d39b7"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.R_sessionInfo.log").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.R_sessionInfo.log").md5 == "100faabbbeda1861f5b71c7b8a2e68db"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.dds.rld.rds").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.dds.rld.rds").md5 == "2e002cf5da4d61036291651f7fb9d5ae"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.deseq2.results.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.deseq2.results.tsv").md5 == "e55bc6cb5d5b43d578c9cccfde5c10c6"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.deseq2.sizefactors.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.deseq2.sizefactors.tsv").md5 == "0a3f749c2f8a7817819d2f70e1e24c46"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.pcaexp.pca.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.pcaexp.pca.png").md5 == "1abd35b201389f3968f7d6cf828dbb29"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.normalised_counts.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.normalised_counts.tsv").md5 == "98b790f910b861d079ed8df2319667b1"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.deseq2.dispersion.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.deseq2.dispersion.png").md5 == "11dcb0178a50dd6db8b2e95261ec8917"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.pcaexp.genes_pca.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.pcaexp.genes_pca.png").md5 == "21cc93a406368ab3b92d3faf529984af"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.pcaexp.scree.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.pcaexp.scree.png").md5 == "9d39ff37bb2712d4844a1fff87c47471"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.deseq2.ma.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.deseq2.ma.png").md5 == "aad53c39d3d665b37fee80d62a47a043"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.pcaexp.corr.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.pcaexp.corr.png").md5 == "7dee71da729e125b9b1bd8d33852ff92"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.pcaexp.loadings.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_B/condition-A-B.pcaexp.loadings.png").md5 == "3fdce72c7df5ac488d6348bcfbf35fe3"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.pcaexp.corr.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.pcaexp.corr.png").md5 == "7dee71da729e125b9b1bd8d33852ff92"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.deseq2.ma.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.deseq2.ma.png").md5 == "aad53c39d3d665b37fee80d62a47a043"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.pcaexp.pca.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.pcaexp.pca.png").md5 == "92e877bc6d7c25074222f2cecb41b837"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.R_sessionInfo.log").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.R_sessionInfo.log").md5 == "78b44e4154e6d7f81bbddb5153982647"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.deseq2.sizefactors.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.deseq2.sizefactors.tsv").md5 == "0a3f749c2f8a7817819d2f70e1e24c46"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.pcaexp.genes_pca.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.pcaexp.genes_pca.png").md5 == "21cc93a406368ab3b92d3faf529984af"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.pcaexp.loadings.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.pcaexp.loadings.png").md5 == "3fdce72c7df5ac488d6348bcfbf35fe3"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.deseq2.dispersion.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.deseq2.dispersion.png").md5 == "11dcb0178a50dd6db8b2e95261ec8917"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.pcaexp.scree.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.pcaexp.scree.png").md5 == "82230a77eb00eb47d64c518ef3cc0e01"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.normalised_counts.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.normalised_counts.tsv").md5 == "98b790f910b861d079ed8df2319667b1"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.deseq2.results.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.deseq2.results.tsv").md5 == "7ca8a8f25cd07345b49e5046601776a4"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.dds.rld.rds").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:C_A/condition-C-A.dds.rld.rds").md5 == "2e002cf5da4d61036291651f7fb9d5ae"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.deseq2.dispersion.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.deseq2.dispersion.png").md5 == "11dcb0178a50dd6db8b2e95261ec8917"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.R_sessionInfo.log").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.R_sessionInfo.log").md5 == "78b44e4154e6d7f81bbddb5153982647"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.normalised_counts.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.normalised_counts.tsv").md5 == "98b790f910b861d079ed8df2319667b1"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.deseq2.ma.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.deseq2.ma.png").md5 == "aad53c39d3d665b37fee80d62a47a043"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.pcaexp.scree.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.pcaexp.scree.png").md5 == "623ad3d9f9e3b54a7fb25d8ae0206358"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.pcaexp.corr.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.pcaexp.corr.png").md5 == "7dee71da729e125b9b1bd8d33852ff92"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.deseq2.results.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.deseq2.results.tsv").md5 == "6d504d70dc61f24f480dfb60d40c0783"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.pcaexp.genes_pca.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.pcaexp.genes_pca.png").md5 == "21cc93a406368ab3b92d3faf529984af"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.pcaexp.pca.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.pcaexp.pca.png").md5 == "1f397dd75254020645346d45539e3685"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.dds.rld.rds").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.dds.rld.rds").md5 == "2e002cf5da4d61036291651f7fb9d5ae"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.deseq2.sizefactors.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.deseq2.sizefactors.tsv").md5 == "0a3f749c2f8a7817819d2f70e1e24c46"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.pcaexp.loadings.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:A_C/condition-A-C.pcaexp.loadings.png").md5 == "3fdce72c7df5ac488d6348bcfbf35fe3"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.R_sessionInfo.log").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.R_sessionInfo.log").md5 == "78b44e4154e6d7f81bbddb5153982647"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.pcaexp.loadings.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.pcaexp.loadings.png").md5 == "3fdce72c7df5ac488d6348bcfbf35fe3"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.deseq2.sizefactors.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.deseq2.sizefactors.tsv").md5 == "0a3f749c2f8a7817819d2f70e1e24c46"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.normalised_counts.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.normalised_counts.tsv").md5 == "98b790f910b861d079ed8df2319667b1"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.deseq2.dispersion.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.deseq2.dispersion.png").md5 == "11dcb0178a50dd6db8b2e95261ec8917"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.pcaexp.pca.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.pcaexp.pca.png").md5 == "2dfdc8f027277f3febe349ee9154a745"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.deseq2.results.tsv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.deseq2.results.tsv").md5 == "b9670fc32fa7d9cfbd9ea23e50a695dc"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.deseq2.ma.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.deseq2.ma.png").md5 == "aad53c39d3d665b37fee80d62a47a043"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.pcaexp.genes_pca.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.pcaexp.genes_pca.png").md5 == "21cc93a406368ab3b92d3faf529984af"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.pcaexp.scree.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.pcaexp.scree.png").md5 == "ebb4ffbffb2d019e26630b40589c6672"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.dds.rld.rds").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.dds.rld.rds").md5 == "2e002cf5da4d61036291651f7fb9d5ae"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.pcaexp.corr.png").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/deseq2/condition:B_C/condition-B-C.pcaexp.corr.png").md5 == "7dee71da729e125b9b1bd8d33852ff92"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/pipeline_info/local_versions.yml").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/pipeline_info/local_versions.yml").md5 == "09e30820cbbcf5edfc7b4a0bb8562138"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/pipeline_info/samplesheet.valid.csv").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/pipeline_info/samplesheet.valid.csv").md5 == "df7e951a6b5390ff452a964ed1e4aa02"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/pipeline_info/software_versions.yml").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/pipeline_info/software_versions.yml").md5 == "1c5c0918da70d6f86380c66a4524096d"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/pipeline_info/execution_report_2022-12-23_13-59-15.html").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/pipeline_info/execution_report_2022-12-23_13-59-15.html").md5 == "1acaed7698194b41dfcdae93b616ae0e"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/pipeline_info/pipeline_dag_2022-12-23_13-59-15.html").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/pipeline_info/pipeline_dag_2022-12-23_13-59-15.html").md5 == "7948622566eaa6eb2f2d5bd12bb72f5a"
+
+assert new File(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/pipeline_info/execution_timeline_2022-12-23_13-59-15.html").exists()
+assert path(".nf-test/tests/d795adaadf26f867488634c5e3818ca1/output/pipeline_info/execution_timeline_2022-12-23_13-59-15.html").md5 == "eccb3bc53b9fd9dabf57fe63b7505bda"
+
