@@ -63,12 +63,6 @@ jobs:
       - name: Check out pipeline code
         uses: actions/checkout@v3
 
-      - name: Set up Singularity
-        if: matrix.profile == 'singularity'
-        uses: eWaterCycle/setup-singularity@v5
-        with:
-          singularity-version: 3.7.1
-
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
         with:
@@ -78,6 +72,12 @@ jobs:
         run: |
           wget -qO- https://code.askimed.com/install/nf-test | bash
           sudo mv nf-test /usr/local/bin/
+
+      - name: Set up Singularity
+        if: matrix.profile == 'singularity'
+        uses: eWaterCycle/setup-singularity@v5
+        with:
+          singularity-version: 3.7.1
 
       - name: Run nf-test
         run: |
