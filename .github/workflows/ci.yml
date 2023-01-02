@@ -74,6 +74,12 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
 
+      - name: Install nf-test
+        run: |
+          wget -qO- https://code.askimed.com/install/nf-test | bash
+          sudo mv nf-test /usr/local/bin/
+
+
       - name: Run nf-test
         run: |
           nf-test test \
