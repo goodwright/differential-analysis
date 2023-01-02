@@ -69,7 +69,10 @@ jobs:
           version: "${{ matrix.NXF_VER }}"
 
       - name: Install nf-test
-        run: |
+        uses: Wandalen/wretry.action@v1.0.36
+        with:
+          attempt_limit: 3
+          command: |
           wget -qO- https://code.askimed.com/install/nf-test | bash
           sudo mv nf-test /usr/local/bin/
 
