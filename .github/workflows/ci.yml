@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  small_pipeline_test:
     name: Small pipeline test
     if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'goodwright/differential-analysis') }}"
     runs-on: ubuntu-latest
@@ -25,9 +25,16 @@ jobs:
         NXF_VER:
           - "22.10.1"
           - ""
+        profile: ["docker", "singularity"]
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
+
+      - name: Set up Singularity
+        if: matrix.profile == 'singularity'
+        uses: eWaterCycle/setup-singularity@v5
+        with:
+          singularity-version: 3.7.1
 
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
@@ -36,4 +43,45 @@ jobs:
 
       - name: Run pipeline with test data
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
+          nextflow run ${GITHUB_WORKSPACE} -profile test,${{ matrix.profile }} --outdir ./results
+
+  nf_test:
+    name: nf-test tests
+    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'goodwright/differential-analysis') }}"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        NXF_VER:
+          - "22.10.1"
+          - ""
+        profile: ["docker", "singularity"]
+        test:
+          - "comparison_none"
+          - "comparison_single"
+          - "comparison_multi"
+    steps:
+      - name: Check out pipeline code
+        uses: actions/checkout@v3
+
+      - name: Set up Singularity
+        if: matrix.profile == 'singularity'
+        uses: eWaterCycle/setup-singularity@v5
+        with:
+          singularity-version: 3.7.1
+
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v1
+        with:
+          version: "${{ matrix.NXF_VER }}"
+
+      - name: Run nf-test
+        run: |
+          nf-test test \
+            --profile=test,${{ matrix.profile }} \
+            tests/${{ matrix.test }}/*.nf.test \
+            --tap=test.tap
+
+      - uses: pcolby/tap-summary@v1
+        with:
+          path: >-
+            test.tap
