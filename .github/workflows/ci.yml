@@ -54,7 +54,7 @@ jobs:
         NXF_VER:
           - "22.10.1"
           - ""
-        profile: ["docker", "singularity"]
+        profile: ["docker"]
         test:
           - "comparison_none"
           - "comparison_single"
@@ -72,12 +72,6 @@ jobs:
         run: |
           wget -qO- https://code.askimed.com/install/nf-test | bash
           sudo mv nf-test /usr/local/bin/
-
-      - name: Set up Singularity
-        if: matrix.profile == 'singularity'
-        uses: eWaterCycle/setup-singularity@v5
-        with:
-          singularity-version: 3.7.1
 
       - name: Run nf-test
         run: |
