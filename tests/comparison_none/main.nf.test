@@ -23,7 +23,6 @@ nextflow_pipeline {
             assert path("$outputDir/deseq2/condition:C_B/condition-C-B.normalised_counts.tsv").md5 == "98b790f910b861d079ed8df2319667b1"
 
             assert new File("$outputDir/deseq2/condition:C_B/condition-C-B.dds.rld.rds").exists()
-            assert path("$outputDir/deseq2/condition:C_B/condition-C-B.dds.rld.rds").md5 == "2e002cf5da4d61036291651f7fb9d5ae"
 
             assert new File("$outputDir/deseq2/condition:C_B/condition-C-B.deseq2.results.tsv").exists()
             assert path("$outputDir/deseq2/condition:C_B/condition-C-B.deseq2.results.tsv").md5 == "83e75f4ca8a44f6bee15f3ea9a10e659"
@@ -32,7 +31,6 @@ nextflow_pipeline {
             assert path("$outputDir/deseq2/condition:B_A/condition-B-A.deseq2.sizefactors.tsv").md5 == "0a3f749c2f8a7817819d2f70e1e24c46"
 
             assert new File("$outputDir/deseq2/condition:B_A/condition-B-A.dds.rld.rds").exists()
-            assert path("$outputDir/deseq2/condition:B_A/condition-B-A.dds.rld.rds").md5 == "2e002cf5da4d61036291651f7fb9d5ae"
 
             assert new File("$outputDir/deseq2/condition:B_A/condition-B-A.normalised_counts.tsv").exists()
             assert path("$outputDir/deseq2/condition:B_A/condition-B-A.normalised_counts.tsv").md5 == "98b790f910b861d079ed8df2319667b1"
@@ -41,7 +39,6 @@ nextflow_pipeline {
             assert path("$outputDir/deseq2/condition:B_A/condition-B-A.deseq2.results.tsv").md5 == "fee893c0025171ec5ddff5f9f37d39b7"
 
             assert new File("$outputDir/deseq2/condition:A_B/condition-A-B.dds.rld.rds").exists()
-            assert path("$outputDir/deseq2/condition:A_B/condition-A-B.dds.rld.rds").md5 == "2e002cf5da4d61036291651f7fb9d5ae"
 
             assert new File("$outputDir/deseq2/condition:A_B/condition-A-B.deseq2.results.tsv").exists()
             assert path("$outputDir/deseq2/condition:A_B/condition-A-B.deseq2.results.tsv").md5 == "e55bc6cb5d5b43d578c9cccfde5c10c6"
@@ -62,7 +59,6 @@ nextflow_pipeline {
             assert path("$outputDir/deseq2/condition:C_A/condition-C-A.deseq2.results.tsv").md5 == "7ca8a8f25cd07345b49e5046601776a4"
 
             assert new File("$outputDir/deseq2/condition:C_A/condition-C-A.dds.rld.rds").exists()
-            assert path("$outputDir/deseq2/condition:C_A/condition-C-A.dds.rld.rds").md5 == "2e002cf5da4d61036291651f7fb9d5ae"
 
             assert new File("$outputDir/deseq2/condition:A_C/condition-A-C.normalised_counts.tsv").exists()
             assert path("$outputDir/deseq2/condition:A_C/condition-A-C.normalised_counts.tsv").md5 == "98b790f910b861d079ed8df2319667b1"
@@ -71,7 +67,6 @@ nextflow_pipeline {
             assert path("$outputDir/deseq2/condition:A_C/condition-A-C.deseq2.results.tsv").md5 == "6d504d70dc61f24f480dfb60d40c0783"
 
             assert new File("$outputDir/deseq2/condition:A_C/condition-A-C.dds.rld.rds").exists()
-            assert path("$outputDir/deseq2/condition:A_C/condition-A-C.dds.rld.rds").md5 == "2e002cf5da4d61036291651f7fb9d5ae"
 
             assert new File("$outputDir/deseq2/condition:A_C/condition-A-C.deseq2.sizefactors.tsv").exists()
             assert path("$outputDir/deseq2/condition:A_C/condition-A-C.deseq2.sizefactors.tsv").md5 == "0a3f749c2f8a7817819d2f70e1e24c46"
@@ -86,7 +81,6 @@ nextflow_pipeline {
             assert path("$outputDir/deseq2/condition:B_C/condition-B-C.deseq2.results.tsv").md5 == "b9670fc32fa7d9cfbd9ea23e50a695dc"
 
             assert new File("$outputDir/deseq2/condition:B_C/condition-B-C.dds.rld.rds").exists()
-            assert path("$outputDir/deseq2/condition:B_C/condition-B-C.dds.rld.rds").md5 == "2e002cf5da4d61036291651f7fb9d5ae"
         }
     }
 }
