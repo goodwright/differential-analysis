@@ -67,7 +67,7 @@ opt <- list(
     plot_height = 1200,
     plot_res = 300,
 	fold_change = 0.1,
-	p_value = 0.1
+	p_value = 0.5
 )
 opt_types <- lapply(opt, class)
 
@@ -163,6 +163,17 @@ de$diffexpressed <- paste0("Unchanged (",n_unchanged,")")
 de$diffexpressed[de$log2FoldChange >= opt$fold_change & de$padj < opt$p_value] <- paste0("Up (",n_up,")")
 de$diffexpressed[de$log2FoldChange <= -(opt$fold_change) & de$padj < opt$p_value] <- paste0("Down (",n_down,")")
 
+# set colours vector
+if (n_up == 0 & n_down == 0){
+	cvec = c("#84A1AB")
+} else if (n_up == 0){
+	cvec = c("#B02302", "#84A1AB")
+} else if (n_down == 0){
+	cvec = c("#84A1AB", "#61B002")
+} else {
+	cvec = c("#B02302", "#84A1AB", "#61B002")
+}
+
 # label genes that are differentially expressed
 de$delabel <- NA
 de$delabel[de$diffexpressed != "NO"] <- de$gene_id[de$diffexpressed != "NO"]
@@ -173,7 +184,7 @@ ggplot(data=de, aes(x=log2FoldChange, y=-log10(padj), label=delabel)) +
         geom_hline(yintercept=-log10(opt$p_value), col="light grey", linetype="dashed") +
         geom_point(aes(color=diffexpressed), alpha=0.5) + 
         geom_label_repel(size=3) +
-        scale_color_manual(values=c("#B02302", "#84A1AB", "#61B002")) +
+        scale_color_manual(values=cvec) +
 		theme_bw()
 
 ggsave(
