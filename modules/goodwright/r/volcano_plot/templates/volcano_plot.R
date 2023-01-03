@@ -171,7 +171,7 @@ de$delabel[de$diffexpressed != "NO"] <- de$gene_id[de$diffexpressed != "NO"]
 ggplot(data=de, aes(x=log2FoldChange, y=-log10(padj), label=delabel)) +
         geom_vline(xintercept=c(-(opt$fold_change), opt$fold_change), col="light grey", linetype="dashed") +
         geom_hline(yintercept=-log10(opt$p_value), col="light grey", linetype="dashed") +
-        geom_point(aes(color=diffexpressed)) + 
+        geom_point(aes(color=diffexpressed), alpha=0.5) + 
         geom_label_repel(size=3) +
         scale_color_manual(values=c("#B02302", "#84A1AB", "#61B002")) +
 		theme_bw()
