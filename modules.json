@@ -1,42 +1,42 @@
 {
-  "name": "goodwright/differential-analysis",
-  "homePage": "https://github.com/goodwright/differential-analysis",
-  "repos": {
-    "https://github.com/goodwright/flow-nf.git": {
-      "modules": {
-        "goodwright": {
-          "dump_software_versions": {
-            "branch": "dev",
-            "git_sha": "f9c6d7a8b342f0561c74980d81b21df00cf85ebd",
-            "installed_by": ["modules"]
-          },
-          "r/deseq2": {
-            "branch": "dev",
-            "git_sha": "cf1ac1f10dd4502218bb334b3b7c46e71205d074",
-            "installed_by": ["modules"]
-          },
-          "r/deseq2_plots": {
-            "branch": "dev",
-            "git_sha": "21aa5da4c49cf0088447fa81f5e10bf66e3f0e16",
-            "installed_by": ["modules"]
-          },
-          "r/pcaexplorer": {
-            "branch": "dev",
-            "git_sha": "21aa5da4c49cf0088447fa81f5e10bf66e3f0e16",
-            "installed_by": ["modules"]
-          },
-          "sample/diff_samplesheet_check": {
-            "branch": "dev",
-            "git_sha": "345bddfb56c2c0d7e1be355feb885079e7017396",
-            "installed_by": ["modules"]
-          },
-          "util/logging": {
-            "branch": "dev",
-            "git_sha": "a86151c42d09cfa2e707008d32233054aabe5073",
-            "installed_by": ["modules"]
-          }
+    "name": "goodwright/differential-analysis",
+    "homePage": "https://github.com/goodwright/differential-analysis",
+    "repos": {
+        "https://github.com/goodwright/flow-nf.git": {
+            "modules": {
+                "goodwright": {
+                    "dump_software_versions": {
+                        "branch": "dev",
+                        "git_sha": "181741cf3cc9d2fc548ce19b6e92b6331a45177d",
+                        "installed_by": ["modules"]
+                    },
+                    "r/deseq2": {
+                        "branch": "dev",
+                        "git_sha": "86220b3d5c1f70f6523ab24960d514506a1142dd",
+                        "installed_by": ["modules"]
+                    },
+                    "r/deseq2_plots": {
+                        "branch": "dev",
+                        "git_sha": "86220b3d5c1f70f6523ab24960d514506a1142dd",
+                        "installed_by": ["modules"]
+                    },
+                    "r/pcaexplorer": {
+                        "branch": "dev",
+                        "git_sha": "c921383f21931f3745bde850656870b45102e729",
+                        "installed_by": ["modules"]
+                    },
+                    "sample/diff_samplesheet_check": {
+                        "branch": "dev",
+                        "git_sha": "4cc7d81732f87f4179d45c599f290a70c934889a",
+                        "installed_by": ["modules"]
+                    },
+                    "util/logging": {
+                        "branch": "dev",
+                        "git_sha": "a86151c42d09cfa2e707008d32233054aabe5073",
+                        "installed_by": ["modules"]
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }

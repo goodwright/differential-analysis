@@ -6,6 +6,9 @@ import errno
 import argparse
 import platform
 
+import pandas as pd
+from functools import reduce
+
 MIN_COLS = 2
 HEADER = ["sample_id", "condition"]
 
@@ -34,6 +37,44 @@ def dump_versions(process_name):
         out_f.write(process_name + ":\n")
         out_f.write("    python: " + platform.python_version() + "\n")
 
+
+def merge_counts_file(counts):
+    # Split counts file list by space
+    counts_list = counts.split(" ")
+
+    # if counts list has a length of 1 then return
+    if len(counts_list) == 1:
+        return counts
+
+    # Create a list of dataframes
+    df_list = []
+
+    # Iterate over counts files
+    for count_file in counts_list:
+        # Load counts file
+        df = pd.read_csv(count_file, sep="\t", index_col=0)
+
+        # Save index column and sort names out
+        index_name = df.index.name
+        df.index.name = "index"
+        df[index_name] = df.index
+
+        # Move last column to first
+        cols = df.columns.tolist()
+        cols = cols[-1:] + cols[:-1]
+        df = df[cols]
+
+        # Append counts file to list
+        df_list.append(df)
+
+    # Merge counts files
+    df_merged = reduce(lambda  left,right: pd.merge(left,right, how='outer'), df_list).fillna(0)
+
+    # Write merged counts file
+    df_merged.to_csv("merged_counts.tsv", sep="\t", index=False)
+
+    # Return merged counts file
+    return "merged_counts.tsv"
 
 def check_samplesheet(process_name, samplesheet, counts, count_sep, output):
     """
@@ -154,7 +195,7 @@ def check_samplesheet(process_name, samplesheet, counts, count_sep, output):
     # Check that all samples in samplesheet are present in counts file
     for sample in sample_dict.keys():
         if sample not in count_dict.keys():
-            print_error("Sample {} not found in counts file!".format(sample))
+            print_error("Sample id '{}' not found in counts file!".format(sample))
 
     # # Check that all samples in counts file are present in samplesheet
     # for sample in count_dict.keys():
@@ -188,4 +229,5 @@ if __name__ == "__main__":
     parser.add_argument("--output", default="!{output}")
     args = parser.parse_args()
 
-    check_samplesheet(args.process_name, args.samplesheet, args.counts, args.count_sep, args.output)
+    counts = merge_counts_file(args.counts)
+    check_samplesheet(args.process_name, args.samplesheet, counts, args.count_sep, args.output)
