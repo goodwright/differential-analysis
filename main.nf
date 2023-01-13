@@ -33,8 +33,7 @@ log.info summary_log(workflow, params, params.debug, params.monochrome_logs)
 
 // Check manditory input parameters to see if the files exist if they have been specified
 check_param_list = [
-    samplesheet: params.samplesheet,
-    counts     : params.counts
+    samplesheet: params.samplesheet
 ]
 for (param in check_param_list) { 
     if (!param.value) { 
@@ -53,6 +52,10 @@ comparisons = null
 if (params.comparisons != "all") {
     comparisons = params.comparisons.split(':').collect{ it.trim() }
 }
+
+// Split count file input into list
+count_files = params.counts.split(',').collect{ file(it.trim(), checkIfExists: true) }
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -120,7 +123,7 @@ workflow DIFF_ANALYSIS {
 
     // Prepare manditory params into channels 
     ch_samplesheet = file(params.samplesheet, checkIfExists: true)
-    ch_counts      = file(params.counts, checkIfExists: true)
+    ch_counts      = Channel.from(count_files)
 
     ch_meta = Channel.empty()
     if(params.run_input_check) {
@@ -129,10 +132,14 @@ workflow DIFF_ANALYSIS {
         */
         SAMPLE_DIFF_SAMPLESHEET_CHECK (
             ch_samplesheet,
-            ch_counts,
+            ch_counts.collect(),
             params.count_sep
         )
         ch_versions = ch_versions.mix(SAMPLE_DIFF_SAMPLESHEET_CHECK.out.versions)
+
+        if (count_files.size() > 1) {
+            ch_counts = SAMPLE_DIFF_SAMPLESHEET_CHECK.out.counts
+        }
 
         /*
         * MODULE: Parse samplesheet into meta and fastq files
