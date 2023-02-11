@@ -1,0 +1,113 @@
+{
+    "inputs": {
+        "input_data": {
+            "name": "Input Data",
+            "description": "Required input data",
+            "properties": {
+                "samplesheet": {
+                    "name": "Samplesheet",
+                    "type": "csv file",
+                    "pattern": "csv",
+                    "required": true,
+                    "description": "A list of sample ids with their condition indicator"
+                },
+                "counts": {
+                    "name": "Counts",
+                    "type": "table",
+                    "pattern": "csv|tsv",
+                    "required": true,
+                    "description": "A table file with whole number counts"
+                },
+            }
+        }
+    
+    },
+
+    "outputs": [
+        {
+            "name": "DESeq2 rds data file",
+            "description": "R rds data object containing processed DESeq2 data.",
+            "filetype": "rds",
+            "process": "R_DESEQ2"
+        },
+        {
+            "name": "DESeq2 results table",
+            "description": "DESeq2 results table",
+            "filetype": "tsv",
+            "process": "R_DESEQ2"
+        },
+        {
+            "name": "DESeq2 size factors",
+            "description": "DESeq2 size factors",
+            "filetype": "tsv",
+            "process": "R_DESEQ2"
+        },
+        {
+            "name": "DESeq2 normalised counts",
+            "description": "DESeq2 normalised counts",
+            "filetype": "tsv",
+            "process": "R_DESEQ2"
+        },
+        {
+            "name": "DESeq2 plots",
+            "description": "DESeq2 standard plot outputs",
+            "filetype": "png",
+            "process": "R_DESEQ2_PLOTS"
+        },
+        {
+            "name": "PCA Explorer plots",
+            "description": "PCA Explorer output plots",
+            "filetype": "png",
+            "process": "R_PCAEXPLORER"
+        }
+    ],
+
+    "parameters": {
+        "pipeline_options": {
+            "count_sep": {
+                "name": "Count seperator",
+                "description": "The text delimiter which seperates columns in the input count matrix file.",
+                "params":[
+                    {
+                        "setting": "count_sep",
+                        "user_set": "true",
+                        "input_type" : "string"
+                    }
+                ]
+            },
+            "contrast_column": {
+                "name": "Contrast column",
+                "description": "The column name in the count matrix to be used for contrast.",
+                "params":[
+                    {
+                        "setting": "contrast_column",
+                        "user_set": "true",
+                        "input_type" : "string"
+                    }
+                ]
+            },
+            "blocking_factors": {
+                "name": "Blocking factors",
+                "description": "Column names to be used for block factors in the differential analysis model.",
+                "params":[
+                    {
+                        "setting": "blocking_factors",
+                        "user_set": "true",
+                        "input_type" : "string"
+                    }
+                ]
+            },
+            "comparisons": {
+                "name": "Comparisons",
+                "description": "Sets the comparisons to calculate. Defaults to all against all. To specify comparions use the variables names to compare seperated by an underscore to specify a single comparison and then list them using a colon seperator. For example, C_A:B_C",
+                "params":[
+                    {
+                        "setting": "blocking_factors",
+                        "user_set": "true",
+                        "input_type" : "string"
+                    }
+                ]
+            }
+        }
+    }
+}
