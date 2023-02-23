@@ -49,10 +49,7 @@ for (param in check_param_list) {
 ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
 
 // Collect comparisons if any specified
-comparisons = null
-if (params.comparisons != "all") {
-    comparisons = params.comparisons.split(':').collect{ it.trim() }
-}
+comparisons = params.comparisons ? params.comparisons.split(':').collect{ it.trim() } : null
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,6 +85,7 @@ include { SAMPLE_DIFF_SAMPLESHEET_CHECK } from './modules/goodwright/sample/diff
 include { R_DESEQ2                      } from './modules/goodwright/r/deseq2/main'
 include { R_DESEQ2_PLOTS                } from './modules/goodwright/r/deseq2_plots/main'
 include { R_PCAEXPLORER                 } from './modules/goodwright/r/pcaexplorer/main'
+include { R_VOLCANO_PLOT                } from './modules/goodwright/r/volcano_plot/main'
 include { DUMP_SOFTWARE_VERSIONS        } from './modules/goodwright/dump_software_versions/main'
 
 //
@@ -209,6 +207,19 @@ workflow DIFF_ANALYSIS {
             params.blocking_factors
         )
         ch_versions = ch_versions.mix(R_PCAEXPLORER.out.versions)
+    
+
+        /*
+        * MODULE: Run Volcano Plot
+        */
+        R_VOLCANO_PLOT (
+            R_DESEQ2.out.results,
+            params.contrast_column,
+            ch_comparisons.map { it[0] },
+            ch_comparisons.map { it[1] },
+            params.blocking_factors
+        )
+        ch_versions = ch_versions.mix(R_VOLCANO_PLOT.out.versions)
     }
 
     /*
