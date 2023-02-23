@@ -1,0 +1,68 @@
+name: r_deseq2
+description: Runs R-based deseq2 analysis
+keywords:
+  - r
+  - deseq2
+  - differential analysis
+tools:
+  - deseq2:
+      description: Differential gene expression analysis based on the negative binomial distribution
+      homepage: https://bioconductor.org/packages/release/bioc/html/DESeq2.html
+      documentation: https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - samplesheet:
+      type: file
+      description: Samplesheet file for analysis
+      pattern: "*.{csv}"
+  - counts:
+      type: file
+      description: Counts file for the diff analysis
+      pattern: "*.*"
+  - contrast:
+      type: value
+      description: The column to base the analysis on
+  - reference:
+      type: value
+      description: The reference comparison value
+  - treatment:
+      type: value
+      description: The treatment comparison value
+  - blocking:
+      type: value
+      description: Define blocking variables
+output:
+  - results:
+      type: file
+      description: deseq2 results
+      pattern: "*.deseq2.results.tsv"
+  - rdata:
+      type: file
+      description: R data object of the deseq2 analysis object
+      pattern: "*.dds.rld.rds"
+  - size_factors:
+      type: file
+      description: Size factors table
+      pattern: "*.deseq2.sizefactors.tsv"
+  - size_factors:
+      type: file
+      description: Size factors table
+      pattern: "*.deseq2.sizefactors.tsv"
+  - normalised_counts:
+      type: file
+      description: Normalised counts table
+      pattern: "*.normalised_counts.tsv"
+  - session_info:
+      type: file
+      description: R session info
+      pattern: "*.R_sessionInfo.log"
+  - version:
+      type: file
+      description: File containing software version
+      pattern: "*.{version.txt}"
+authors:
+  - "@chris-cheshire"

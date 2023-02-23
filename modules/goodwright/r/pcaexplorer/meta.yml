@@ -1,0 +1,53 @@
+name: r_pcaexplorer
+description: Generates plots from the pcaexplorer package
+keywords:
+  - r
+  - deseq2
+  - pcaexplorer
+  - differential analysis
+tools:
+  - deseq2:
+      description: Differential gene expression analysis based on the negative binomial distribution
+      homepage: https://bioconductor.org/packages/release/bioc/html/DESeq2.html
+      documentation: https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
+  - pcaexplorer:
+      description: Interactive Visualization of RNA-seq Data Using a Principal Components Approach
+      homepage: https://bioconductor.org/packages/release/bioc/html/pcaExplorer.html
+      documentation: https://bioconductor.org/packages/release/bioc/vignettes/pcaExplorer/inst/doc/pcaExplorer.html
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - rds:
+      type: file
+      description: Input R data object from deseq2 analysis
+      pattern: "*.{rds}"
+  - contrast:
+      type: value
+      description: The column to base the analysis on
+  - reference:
+      type: value
+      description: The reference comparison value
+  - treatment:
+      type: value
+      description: The treatment comparison value
+  - blocking:
+      type: value
+      description: Define blocking variables
+output:
+  - png:
+      type: file
+      description: png generated plots
+      pattern: "*.png"
+  - session_info:
+      type: file
+      description: R session info
+      pattern: "*.R_sessionInfo.log"
+  - version:
+      type: file
+      description: File containing software version
+      pattern: "*.{version.txt}"
+authors:
+  - "@chris-cheshire"
