@@ -9,6 +9,9 @@ import platform
 import pandas as pd
 from functools import reduce
 
+import pandas as pd
+from functools import reduce
+
 MIN_COLS = 2
 HEADER = ["sample_id", "condition"]
 
@@ -59,7 +62,7 @@ def merge_counts_file(counts):
         df.index.name = "index"
         df[index_name] = df.index
 
-        # Move last column to first
+        # Move last column to first
         cols = df.columns.tolist()
         cols = cols[-1:] + cols[:-1]
         df = df[cols]
@@ -68,14 +71,13 @@ def merge_counts_file(counts):
         df_list.append(df)
 
     # Merge counts files
-    df_merged = reduce(lambda left, right: pd.merge(left, right, how="outer"), df_list).fillna(0)
+    df_merged = reduce(lambda  left,right: pd.merge(left,right, how='outer'), df_list).fillna(0)
 
     # Write merged counts file
     df_merged.to_csv("merged_counts.tsv", sep="\t", index=False)
 
     # Return merged counts file
     return "merged_counts.tsv"
-
 
 def check_samplesheet(process_name, samplesheet, counts, count_sep, output):
     """

@@ -59,6 +59,7 @@ jobs:
           - "comparison_none"
           - "comparison_single"
           - "comparison_multi"
+          - "multi_count"
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
