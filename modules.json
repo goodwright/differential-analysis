@@ -31,7 +31,7 @@
                         "installed_by": ["modules"]
                     },
                     "sample/diff_samplesheet_check": {
-                        "branch": "dev",
+                        "branch": "master",
                         "git_sha": "3ec6194034deb1f1b35af3531b0626ff9699a90f",
                         "installed_by": ["modules"]
                     },
