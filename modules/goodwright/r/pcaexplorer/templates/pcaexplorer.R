@@ -137,10 +137,10 @@ dds_rlog <- rlogTransformation(dds)
 
 # Create intgroup
 intgroup.vars <- c(opt$contrast_variable)
-if (!is.null(opt$blocking_variables)) {
-    blocking.vars = unlist(strsplit(opt$blocking_variables, split = ';'))
-    intgroup.vars <- c(intgroup, blocking.vars)
-}
+# if (!is.null(opt$blocking_variables)) {
+#     blocking.vars = unlist(strsplit(opt$blocking_variables, split = ';'))
+#     intgroup.vars <- c(intgroup.vars, blocking.vars)
+# }
 
 # PCA Plot
 pca_title <- ifelse(is.null(opt$pca_title), paste('PCA Plot', output_prefix), opt$pca_title)
