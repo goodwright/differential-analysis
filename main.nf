@@ -83,6 +83,8 @@ if (ch_blocking_factors) {
 // MODULEs
 //
 
+include { GEN_CONTRASTS } from './modules/local/gen_contrasts.nf'
+
 //
 // SUBWORKFLOWS
 //
@@ -198,68 +200,73 @@ workflow DIFF_ANALYSIS {
         if (ch_blocking_factors) {
             ch_comparisons = ch_comparisons
                 .join (ch_blocking_factors)
-                .map { [it[0], it[1], it[2], it[4]]}
+                .map { [it[0], params.contrast_column, it[1], it[2], it[4]]}
 
         }
         //ch_comparisons | view
 
-        /*
-        * MODULE: Run deseq2
-        */
-        R_DESEQ2 (
-            ch_design.collect(),
-            ch_counts.collect(),
-            params.contrast_column,
-            ch_comparisons.map { it[1] },
-            ch_comparisons.map { it[2] },
-            ch_comparisons.map { it[3] }
+        GEN_CONTRASTS (
+            ch_comparisons.toList()
         )
-        ch_versions = ch_versions.mix(R_DESEQ2.out.versions)
+        ch_contrasts = GEN_CONTRASTS.out.file
 
-        /*
-        * MODULE: Run deseq2 plots
-        */
-        R_DESEQ2_PLOTS (
-            R_DESEQ2.out.rdata,
-            params.contrast_column,
-            ch_comparisons.map { it[1] },
-            ch_comparisons.map { it[2] },
-            params.blocking_factors
-        )
-        ch_versions = ch_versions.mix(R_DESEQ2_PLOTS.out.versions)
+        // /*
+        // * MODULE: Run deseq2
+        // */
+        // R_DESEQ2 (
+        //     ch_design.collect(),
+        //     ch_counts.collect(),
+        //     params.contrast_column,
+        //     ch_comparisons.map { it[1] },
+        //     ch_comparisons.map { it[2] },
+        //     ch_comparisons.map { it[3] }
+        // )
+        // ch_versions = ch_versions.mix(R_DESEQ2.out.versions)
 
-        /*
-        * MODULE: Run pcaexplorer
-        */
-        R_PCAEXPLORER (
-            R_DESEQ2.out.rdata,
-            params.contrast_column,
-            ch_comparisons.map { it[1] },
-            ch_comparisons.map { it[2] },
-            params.blocking_factors
-        )
-        ch_versions = ch_versions.mix(R_PCAEXPLORER.out.versions)
+        // /*
+        // * MODULE: Run deseq2 plots
+        // */
+        // R_DESEQ2_PLOTS (
+        //     R_DESEQ2.out.rdata,
+        //     params.contrast_column,
+        //     ch_comparisons.map { it[1] },
+        //     ch_comparisons.map { it[2] },
+        //     params.blocking_factors
+        // )
+        // ch_versions = ch_versions.mix(R_DESEQ2_PLOTS.out.versions)
+
+        // /*
+        // * MODULE: Run pcaexplorer
+        // */
+        // R_PCAEXPLORER (
+        //     R_DESEQ2.out.rdata,
+        //     params.contrast_column,
+        //     ch_comparisons.map { it[1] },
+        //     ch_comparisons.map { it[2] },
+        //     params.blocking_factors
+        // )
+        // ch_versions = ch_versions.mix(R_PCAEXPLORER.out.versions)
     
 
-        /*
-        * MODULE: Run Volcano Plot
-        */
-        R_VOLCANO_PLOT (
-            R_DESEQ2.out.results,
-            params.contrast_column,
-            ch_comparisons.map { it[1] },
-            ch_comparisons.map { it[2] },
-            params.blocking_factors
-        )
-        ch_versions = ch_versions.mix(R_VOLCANO_PLOT.out.versions)
+        // /*
+        // * MODULE: Run Volcano Plot
+        // */
+        // R_VOLCANO_PLOT (
+        //     R_DESEQ2.out.results,
+        //     params.contrast_column,
+        //     ch_comparisons.map { it[1] },
+        //     ch_comparisons.map { it[2] },
+        //     params.blocking_factors
+        // )
+        // ch_versions = ch_versions.mix(R_VOLCANO_PLOT.out.versions)
     }
 
     /*
     * MODULE: Collect software versions
     */
-    DUMP_SOFTWARE_VERSIONS (
-        ch_versions.unique().collectFile()
-    )
+    // DUMP_SOFTWARE_VERSIONS (
+    //     ch_versions.unique().collectFile()
+    // )
 }
 
 /*
