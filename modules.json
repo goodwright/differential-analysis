@@ -20,6 +20,11 @@
                         "git_sha": "86220b3d5c1f70f6523ab24960d514506a1142dd",
                         "installed_by": ["modules"]
                     },
+                    "r/gsea": {
+                        "branch": "master",
+                        "git_sha": "3336ada9db9e7253827fb63a8c966a4d35bbd9cc",
+                        "installed_by": ["modules"]
+                    },
                     "r/pcaexplorer": {
                         "branch": "dev",
                         "git_sha": "c921383f21931f3745bde850656870b45102e729",
