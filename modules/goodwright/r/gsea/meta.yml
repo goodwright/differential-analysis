@@ -1,0 +1,52 @@
+name: r_gsea
+description: Runs gene set enrichment analysis on deseq2 result sets
+keywords:
+  - r
+  - deseq2
+  - gsea
+  - genekitr
+tools:
+  - deseq2:
+      description: Differential gene expression analysis based on the negative binomial distribution
+      homepage: https://bioconductor.org/packages/release/bioc/html/DESeq2.html
+      documentation: https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
+  - genekitr:
+      description: Interactive Visualization of RNA-seq Data Using a Principal Components Approach
+      homepage: https://github.com/GangLiLab/genekitr
+      documentation: https://github.com/GangLiLab/genekitr
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - deseq2_results:
+      type: file
+      description: Input deseq2 results table
+      pattern: "*.{tsv}"
+  - organism:
+      type: value
+      description: The target organism
+output:
+  - ora_data:
+      type: file
+      description: Excel output for ora ranked gsea
+      pattern: "*.xlsx"
+  - gsea_data:
+    type: file
+    description: Excel output for ranked gsea
+    pattern: "*.xlsx"
+  - png:
+      type: file
+      description: png generated plots
+      pattern: "*.png"
+  - session_info:
+      type: file
+      description: R session info
+      pattern: "*.R_sessionInfo.log"
+  - version:
+      type: file
+      description: File containing software version
+      pattern: "*.{version.txt}"
+authors:
+  - "@chris-cheshire"
