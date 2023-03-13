@@ -33,13 +33,12 @@ log.info summary_log(workflow, params, params.debug, params.monochrome_logs)
 
 // Check manditory input parameters to see if the files exist if they have been specified
 check_param_list = [
-    samplesheet: params.samplesheet,
-    counts     : params.counts
+    samplesheet: params.samplesheet
 ]
-for (param in check_param_list) { 
-    if (!param.value) { 
+for (param in check_param_list) {
+    if (!param.value) {
         exit 1, "Required parameter not specified: ${param.key}"
-    } 
+    }
     else {
         file(param.value, checkIfExists: true)
     }
@@ -49,10 +48,24 @@ for (param in check_param_list) {
 ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
 
 // Collect comparisons if any specified
-comparisons = null
-if (params.comparisons != "all") {
-    comparisons = params.comparisons.split(':').collect{ it.trim() }
+comparisons = params.comparisons ? params.comparisons.split(':').collect{ it.trim() } : null
+
+// Split count file input into list
+count_files = params.counts.split(',').collect{ file(it.trim(), checkIfExists: true) }
+
+// Collect blocking variable
+ch_blocking_factors = params.blocking_factors ? params.blocking_factors.split('/').collect{ it.trim() } : null
+
+// Parse blocking factors into a channel
+if (ch_blocking_factors) {
+    ch_blocking_factors = Channel.from(ch_blocking_factors)
+
+    ch_blocking_factors = ch_blocking_factors.map{
+        def bsplit = it.split(':')
+        [bsplit[0], bsplit.size() == 1 ? '' : bsplit[1]]
+    }
 }
+//ch_blocking_factors | view
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,6 +101,8 @@ include { SAMPLE_DIFF_SAMPLESHEET_CHECK } from './modules/goodwright/sample/diff
 include { R_DESEQ2                      } from './modules/goodwright/r/deseq2/main'
 include { R_DESEQ2_PLOTS                } from './modules/goodwright/r/deseq2_plots/main'
 include { R_PCAEXPLORER                 } from './modules/goodwright/r/pcaexplorer/main'
+include { R_VOLCANO_PLOT                } from './modules/goodwright/r/volcano_plot/main'
+include { R_GSEA                        } from './modules/goodwright/r/gsea/main'
 include { DUMP_SOFTWARE_VERSIONS        } from './modules/goodwright/dump_software_versions/main'
 
 //
@@ -118,9 +133,9 @@ workflow DIFF_ANALYSIS {
     // Init
     ch_versions = Channel.empty()
 
-    // Prepare manditory params into channels 
+    // Prepare manditory params into channels
     ch_samplesheet = file(params.samplesheet, checkIfExists: true)
-    ch_counts      = file(params.counts, checkIfExists: true)
+    ch_counts      = Channel.from(count_files)
 
     ch_meta = Channel.empty()
     if(params.run_input_check) {
@@ -129,21 +144,26 @@ workflow DIFF_ANALYSIS {
         */
         SAMPLE_DIFF_SAMPLESHEET_CHECK (
             ch_samplesheet,
-            ch_counts,
+            ch_counts.collect(),
             params.count_sep
         )
         ch_versions = ch_versions.mix(SAMPLE_DIFF_SAMPLESHEET_CHECK.out.versions)
+
+        if (count_files.size() > 1) {
+            ch_counts = SAMPLE_DIFF_SAMPLESHEET_CHECK.out.counts
+        }
 
         /*
         * MODULE: Parse samplesheet into meta and fastq files
         */
         ch_meta = SAMPLE_DIFF_SAMPLESHEET_CHECK.out.csv
-           .splitCsv ( header:true, sep:"," )
+            .splitCsv ( header:true, sep:"," )
     }
     //EXAMPLE CHANNEL STRUCT: [sample_id:RAP1_IAA_30M_REP1, condition:B]
     //ch_meta | view
     //SAMPLE_DIFF_SAMPLESHEET_CHECK.out.csv | view
 
+    ch_dsq_results = Channel.empty()
     if(params.run_diff_analysis) {
         /*
         * CHANNEL: Create channel from samplesheet
@@ -155,7 +175,7 @@ workflow DIFF_ANALYSIS {
 
         /*
         * CHANNEL: Create channel for all against all analysis
-        *         but filter for only the conditions specified
+        * but filter for only the conditions specified in on blocking factors
         */
         ch_comparison_set = ch_meta
             .map { it[params.contrast_column] }
@@ -167,9 +187,20 @@ workflow DIFF_ANALYSIS {
             .filter { it[0] != it[1] }
         //ch_comparisons | view
 
-        if( comparisons ) {
+        if(comparisons && comparisons[0] != "all") {
             ch_comparisons = ch_comparisons
-                .filter { ( it[0] + "_" + it[1] )  in comparisons }
+                .filter { ( it[0] + "_" + it[1] ) in comparisons }
+        }
+        //ch_comparisons | view
+
+        ch_comparisons = ch_comparisons
+                .map { [it[0] + "_" + it[1], it[0], it[1], '' ]}
+
+        if (ch_blocking_factors) {
+            ch_comparisons = ch_comparisons
+                .join (ch_blocking_factors)
+                .map { [it[0], params.contrast_column, it[1], it[2], it[4]]}
+
         }
         //ch_comparisons | view
 
@@ -178,13 +209,15 @@ workflow DIFF_ANALYSIS {
         */
         R_DESEQ2 (
             ch_design.collect(),
-            ch_counts,
+            ch_counts.collect(),
             params.contrast_column,
-            ch_comparisons.map { it[0] },
             ch_comparisons.map { it[1] },
-            params.blocking_factors
+            ch_comparisons.map { it[2] },
+            ch_comparisons.map { it[3] }
         )
+        ch_dsq_results = R_DESEQ2.out.results
         ch_versions = ch_versions.mix(R_DESEQ2.out.versions)
+        //R_DESEQ2.out.results | view
 
         /*
         * MODULE: Run deseq2 plots
@@ -192,8 +225,8 @@ workflow DIFF_ANALYSIS {
         R_DESEQ2_PLOTS (
             R_DESEQ2.out.rdata,
             params.contrast_column,
-            ch_comparisons.map { it[0] },
             ch_comparisons.map { it[1] },
+            ch_comparisons.map { it[2] },
             params.blocking_factors
         )
         ch_versions = ch_versions.mix(R_DESEQ2_PLOTS.out.versions)
@@ -204,11 +237,41 @@ workflow DIFF_ANALYSIS {
         R_PCAEXPLORER (
             R_DESEQ2.out.rdata,
             params.contrast_column,
-            ch_comparisons.map { it[0] },
             ch_comparisons.map { it[1] },
+            ch_comparisons.map { it[2] },
             params.blocking_factors
         )
         ch_versions = ch_versions.mix(R_PCAEXPLORER.out.versions)
+
+        /*
+        * MODULE: Run Volcano Plot
+        */
+        R_VOLCANO_PLOT (
+            R_DESEQ2.out.results,
+            params.contrast_column,
+            ch_comparisons.map { it[1] },
+            ch_comparisons.map { it[2] },
+            params.blocking_factors
+        )
+        ch_versions = ch_versions.mix(R_VOLCANO_PLOT.out.versions)
+    }
+
+    if(params.run_gsea) {
+        /*
+        * MODULE: Prep GSEA input channel with the filename as the meta id
+        */
+        ch_gsea_input = ch_dsq_results
+            .map{ [[id: it[1].simpleName], it[1]] }
+        //ch_gsea_input | view
+
+        /*
+        * MODULE: Run GSEA
+        */
+        R_GSEA (
+            ch_gsea_input,
+            params.organism
+        )
+        ch_versions = ch_versions.mix(R_GSEA.out.versions)
     }
 
     /*

@@ -22,6 +22,33 @@ parse_args <- function(x){
     parsed_args[! is.na(parsed_args)]
 }
 
+#' Flexibly read CSV or TSV files
+#'
+#' @param file Input file
+#' @param header Passed to read.delim()
+#' @param row.names Passed to read.delim()
+#'
+#' @return output Data frame
+read_delim_flexible <- function(file, header = TRUE, row.names = NULL){
+
+    ext <- tolower(tail(strsplit(basename(file), split = "\\.")[[1]], 1))
+
+    if (ext == "tsv" || ext == "txt") {
+        separator <- "\t"
+    } else if (ext == "csv") {
+        separator <- ","
+    } else {
+        stop(paste("Unknown separator for", ext))
+    }
+
+    read.delim(
+        file,
+        sep = separator,
+        header = header,
+        row.names = row.names
+    )
+}
+
 #####################################################
 #####################################################
 ## PARSE PARAMETERS FROM NEXTFLOW AND COMMAND LINE ##
@@ -30,33 +57,19 @@ parse_args <- function(x){
 
 # Set defaults and classes
 opt <- list(
-    deseq_rds = "!{rds}",
+    results = "!{results}",
     contrast_variable = "!{contrast_variable}",
     reference_level = "!{reference_level}",
     treatment_level = "!{treatment_level}",
     blocking_variables = "!{blocking_variables}",
 
-    pca_title = NULL,
-    pca_num_genes = 1000,
-    loading_top_genes = 10,
-    gene_pca_num_genes = 1000,
-    gene_pca_alpha = 0.2,
-    gene_pca_show_names = FALSE,
-
     plot_width = 1800,
     plot_height = 1200,
-    plot_res = 200,
-    plot_point_size = 4
+    plot_res = 300,
+	fold_change = 0.1,
+	p_value = 0.5
 )
 opt_types <- lapply(opt, class)
-
-
-# pairwise correlation gene counts
-# genespca top gene count - include default switch for not diisplaying gene names
-# choices?
-# alpha - use default from other script
-# varname.size = 5
-# loadings top genes
 
 # Parse command line args
 cl_args <- commandArgs(trailingOnly=TRUE)
@@ -90,7 +103,7 @@ if (is.na(opt$blocking_variables) || opt$blocking_variables== '') {
 }
 
 # Check if required parameters have been provided
-required_opts <- c('deseq_rds', 'contrast_variable', 'reference_level', 'treatment_level')
+required_opts <- c('results', 'contrast_variable', 'reference_level', 'treatment_level')
 missing <- required_opts[unlist(lapply(opt[required_opts], is.null)) | ! required_opts %in% names(opt)]
 
 if (length(missing) > 0){
@@ -98,7 +111,7 @@ if (length(missing) > 0){
 }
 
 # Check file inputs are valid
-for (file_input in c('deseq_rds')){
+for (file_input in c('results')){
     if (is.null(opt[[file_input]])) {
         stop(paste("Please provide", file_input), call. = FALSE)
     }
@@ -117,7 +130,9 @@ print(opt)
 ################################################
 
 library(DESeq2)
-library(pcaExplorer)
+library(ggplot2)
+library(ggrepel)
+library(dplyr)
 
 ################################################
 ################################################
@@ -128,96 +143,58 @@ library(pcaExplorer)
 prefix_part_names <- c('contrast_variable', 'reference_level', 'treatment_level', 'blocking_variables')
 prefix_parts <- unlist(lapply(prefix_part_names, function(x) gsub("[^[:alnum:]]", "_", opt[[x]])))
 output_prefix <- paste(prefix_parts[prefix_parts != ''], collapse = '-')
-
+contrast.name <- paste(opt$treatment_level, opt$reference_level, sep = "_vs_")
 # Load RDS file
-dds <- readRDS(opt$deseq_rds)
 
-# rlog trans
-dds_rlog <- rlogTransformation(dds)
-
-# Create intgroup
-intgroup.vars <- c(opt$contrast_variable)
-# if (!is.null(opt$blocking_variables)) {
-#     blocking.vars = unlist(strsplit(opt$blocking_variables, split = ';'))
-#     intgroup.vars <- c(intgroup.vars, blocking.vars)
-# }
-
-# PCA Plot
-pca_title <- ifelse(is.null(opt$pca_title), paste('PCA Plot', output_prefix), opt$pca_title)
-png(
-    file = paste(output_prefix, 'pcaexp.pca.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res,
-    pointsize = opt$plot_point_size
-)
-pcaplot(dds_rlog,intgroup = intgroup.vars,ntop = opt$pca_num_genes, pcX = 1, pcY = 2, title = pca_title, ellipse = TRUE)
-dev.off()
-
-# Scree plot
-pcaobj_dds <- prcomp(t(assay(dds_rlog)))
-png(
-    file = paste(output_prefix, 'pcaexp.scree.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res,
-    pointsize = opt$plot_point_size
-)
-pcascree(pcaobj_dds,type="pev", title=ifelse(is.null(opt$pca_title), paste('Scree Plot', output_prefix), opt$pca_title))
-dev.off()
-
-# # Corr plot
-# dd_corr <- correlatePCs(pcaobj_dds,colData(dds))
-# png(
-#     file = paste(output_prefix, 'pcaexp.corr.png', sep = '.'),
-#     width = opt$plot_width,
-#     height = opt$plot_height,
-#     res = opt$plot_res,
-#     pointsize = opt$plot_point_size
-# )
-# plotPCcorrs(dd_corr)
-# dev.off()
-
-# # extract the table of the genes with high loadings
-# hi_loadings(pcaobj_airway,topN = 10,exprTable=counts(dds_airway))
-
-# Plot Loadings
-png(
-    file = paste(output_prefix, 'pcaexp.loadings.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res,
-    pointsize = opt$plot_point_size
-)
-hi_loadings(pcaobj_dds,topN = opt$loading_top_genes)
-dev.off()
-
-# Genes PCA
-png(
-    file = paste(output_prefix, 'pcaexp.genes_pca.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res,
-    pointsize = opt$plot_point_size
-)
-genespca(dds_rlog,
-        ntop=opt$gene_pca_num_genes,
-        alpha = opt$gene_pca_alpha,
-        useRownamesAsLabels=opt$gene_pca_show_names,
-        varname.size = 3
+de <- read_delim_flexible(
+        file = opt$results,
+        header = TRUE
     )
-dev.off()
 
-# Corr plot
-png(
-    file = paste(output_prefix, 'pcaexp.corr.png', sep = '.'),
+# The significantly differentially expressed genes are the ones found in the upper-left and upper-right corners.
+# Add a column to the data frame to specify if they are UP- or DOWN- regulated (log2FoldChange respectively positive or negative)
+
+# get numbers of diff genes for labelling
+n_unchanged <- de %>% filter(log2FoldChange < opt$fold_change & log2FoldChange > -(opt$fold_change)) %>% nrow()
+n_up <- de %>% filter(log2FoldChange >= opt$fold_change & padj < opt$p_value) %>% nrow()
+n_down <- de %>% filter(log2FoldChange <= -(opt$fold_change) & padj < opt$p_value) %>% nrow()
+
+de$diffexpressed <- paste0("Unchanged (",n_unchanged,")")
+de$diffexpressed[de$log2FoldChange >= opt$fold_change & de$padj < opt$p_value] <- paste0("Up (",n_up,")")
+de$diffexpressed[de$log2FoldChange <= -(opt$fold_change) & de$padj < opt$p_value] <- paste0("Down (",n_down,")")
+
+# set colours vector
+if (n_up == 0 & n_down == 0){
+	cvec = c("#84A1AB")
+} else if (n_up == 0){
+	cvec = c("#B02302", "#84A1AB")
+} else if (n_down == 0){
+	cvec = c("#84A1AB", "#61B002")
+} else {
+	cvec = c("#B02302", "#84A1AB", "#61B002")
+}
+
+# label genes that are differentially expressed
+de$delabel <- NA
+de$delabel[de$diffexpressed != "NO"] <- de$gene_id[de$diffexpressed != "NO"]
+
+# Volcano plot
+ggplot(data=de, aes(x=log2FoldChange, y=-log10(padj), label=delabel)) +
+        geom_vline(xintercept=c(-(opt$fold_change), opt$fold_change), col="light grey", linetype="dashed") +
+        geom_hline(yintercept=-log10(opt$p_value), col="light grey", linetype="dashed") +
+        geom_point(aes(color=diffexpressed), alpha=0.5) + 
+        geom_label_repel(size=3) +
+        scale_color_manual(values=cvec) +
+		theme_bw()
+
+ggsave(
+    file = paste(output_prefix, 'deseq2.volcano.png', sep = '.'),
     width = opt$plot_width,
     height = opt$plot_height,
-    res = opt$plot_res,
-    pointsize = opt$plot_point_size
+    dpi = opt$plot_res,
+    units = "px"
 )
-pair_corr(counts(dds)[1:100,])
-dev.off()
+
 
 ################################################
 ################################################

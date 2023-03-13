@@ -9,6 +9,9 @@ nextflow_pipeline {
             params {
                 comparisons = "C_A:B_C"
                 outdir = "$outputDir"
+                skip_gsea = true
+                samplesheet = "./tests/data/samplesheets/test.csv"
+                counts = "./tests/data/counts/nfcore_rnaseq_test_salmon_gene_counts.tsv"
             }
         }
 

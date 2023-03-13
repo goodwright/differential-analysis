@@ -59,6 +59,8 @@ jobs:
           - "comparison_none"
           - "comparison_single"
           - "comparison_multi"
+          - "multi_count"
+          - "gsea"
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
@@ -69,10 +71,12 @@ jobs:
           version: "${{ matrix.NXF_VER }}"
 
       - name: Install nf-test
-        uses: Wandalen/wretry.action@v1.0.36
-        with:
-          attempt_limit: 3
-          command: wget -qO- https://code.askimed.com/install/nf-test | bash && sudo mv nf-test /usr/local/bin/
+        run: |
+          wget -qO- https://github.com/askimed/nf-test/releases/download/v0.7.1/nf-test-0.7.1.tar.gz | tar -xz
+          APP_HOME=${HOME}/.nf-test
+          mkdir -p ${APP_HOME}
+          mv -f nf-test.jar ${APP_HOME}/nf-test.jar
+          mv nf-test /usr/local/bin/
 
       - name: Run nf-test
         run: |
