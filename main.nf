@@ -35,10 +35,10 @@ log.info summary_log(workflow, params, params.debug, params.monochrome_logs)
 check_param_list = [
     samplesheet: params.samplesheet
 ]
-for (param in check_param_list) { 
-    if (!param.value) { 
+for (param in check_param_list) {
+    if (!param.value) {
         exit 1, "Required parameter not specified: ${param.key}"
-    } 
+    }
     else {
         file(param.value, checkIfExists: true)
     }
@@ -133,7 +133,7 @@ workflow DIFF_ANALYSIS {
     // Init
     ch_versions = Channel.empty()
 
-    // Prepare manditory params into channels 
+    // Prepare manditory params into channels
     ch_samplesheet = file(params.samplesheet, checkIfExists: true)
     ch_counts      = Channel.from(count_files)
 
@@ -157,7 +157,7 @@ workflow DIFF_ANALYSIS {
         * MODULE: Parse samplesheet into meta and fastq files
         */
         ch_meta = SAMPLE_DIFF_SAMPLESHEET_CHECK.out.csv
-           .splitCsv ( header:true, sep:"," )
+            .splitCsv ( header:true, sep:"," )
     }
     //EXAMPLE CHANNEL STRUCT: [sample_id:RAP1_IAA_30M_REP1, condition:B]
     //ch_meta | view
@@ -175,8 +175,7 @@ workflow DIFF_ANALYSIS {
 
         /*
         * CHANNEL: Create channel for all against all analysis
-        * but filter for only the conditions specified
-          oin on blocking factors
+        * but filter for only the conditions specified in on blocking factors
         */
         ch_comparison_set = ch_meta
             .map { it[params.contrast_column] }
