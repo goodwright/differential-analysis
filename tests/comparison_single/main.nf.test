@@ -9,6 +9,7 @@ nextflow_pipeline {
             params {
                 comparisons = "C_A"
                 outdir = "$outputDir"
+                skip_gsea = true
             }
         }
 

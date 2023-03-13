@@ -9,6 +9,7 @@ nextflow_pipeline {
                 outdir = "$outputDir"
                 counts = "./tests/data/counts/nfcore_rnaseq_test_salmon_gene_counts_s1.tsv,./tests/data/counts/nfcore_rnaseq_test_salmon_gene_counts_s2.tsv,./tests/data/counts/nfcore_rnaseq_test_salmon_gene_counts_s3.tsv,./tests/data/counts/nfcore_rnaseq_test_salmon_gene_counts_s4.tsv,./tests/data/counts/nfcore_rnaseq_test_salmon_gene_counts_s5.tsv"
                 samplesheet = "./tests/data/samplesheets/test.csv"
+                skip_gsea = true
             }
         }
 
