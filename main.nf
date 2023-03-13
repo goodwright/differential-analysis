@@ -102,6 +102,7 @@ include { R_DESEQ2                      } from './modules/goodwright/r/deseq2/ma
 include { R_DESEQ2_PLOTS                } from './modules/goodwright/r/deseq2_plots/main'
 include { R_PCAEXPLORER                 } from './modules/goodwright/r/pcaexplorer/main'
 include { R_VOLCANO_PLOT                } from './modules/goodwright/r/volcano_plot/main'
+include { R_GSEA                        } from './modules/goodwright/r/gsea/main'
 include { DUMP_SOFTWARE_VERSIONS        } from './modules/goodwright/dump_software_versions/main'
 
 //
@@ -162,6 +163,7 @@ workflow DIFF_ANALYSIS {
     //ch_meta | view
     //SAMPLE_DIFF_SAMPLESHEET_CHECK.out.csv | view
 
+    ch_dsq_results = Channel.empty()
     if(params.run_diff_analysis) {
         /*
         * CHANNEL: Create channel from samplesheet
@@ -173,8 +175,8 @@ workflow DIFF_ANALYSIS {
 
         /*
         * CHANNEL: Create channel for all against all analysis
-        *         but filter for only the conditions specified
-                  join on blocking factors
+        * but filter for only the conditions specified
+          oin on blocking factors
         */
         ch_comparison_set = ch_meta
             .map { it[params.contrast_column] }
@@ -186,7 +188,7 @@ workflow DIFF_ANALYSIS {
             .filter { it[0] != it[1] }
         //ch_comparisons | view
 
-        if( comparisons ) {
+        if(comparisons && comparisons[0] != "all") {
             ch_comparisons = ch_comparisons
                 .filter { ( it[0] + "_" + it[1] ) in comparisons }
         }
@@ -214,7 +216,9 @@ workflow DIFF_ANALYSIS {
             ch_comparisons.map { it[2] },
             ch_comparisons.map { it[3] }
         )
+        ch_dsq_results = R_DESEQ2.out.results
         ch_versions = ch_versions.mix(R_DESEQ2.out.versions)
+        //R_DESEQ2.out.results | view
 
         /*
         * MODULE: Run deseq2 plots
@@ -239,7 +243,6 @@ workflow DIFF_ANALYSIS {
             params.blocking_factors
         )
         ch_versions = ch_versions.mix(R_PCAEXPLORER.out.versions)
-    
 
         /*
         * MODULE: Run Volcano Plot
@@ -252,6 +255,24 @@ workflow DIFF_ANALYSIS {
             params.blocking_factors
         )
         ch_versions = ch_versions.mix(R_VOLCANO_PLOT.out.versions)
+    }
+
+    if(params.run_gsea) {
+        /*
+        * MODULE: Prep GSEA input channel with the filename as the meta id
+        */
+        ch_gsea_input = ch_dsq_results
+            .map{ [[id: it[1].simpleName], it[1]] }
+        //ch_gsea_input | view
+
+        /*
+        * MODULE: Run GSEA
+        */
+        R_GSEA (
+            ch_gsea_input,
+            params.organism
+        )
+        ch_versions = ch_versions.mix(R_GSEA.out.versions)
     }
 
     /*

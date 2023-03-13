@@ -22,7 +22,7 @@
                     },
                     "r/gsea": {
                         "branch": "master",
-                        "git_sha": "3336ada9db9e7253827fb63a8c966a4d35bbd9cc",
+                        "git_sha": "020e79fb5cf3fb119e377ead058820276082e911",
                         "installed_by": ["modules"]
                     },
                     "r/pcaexplorer": {

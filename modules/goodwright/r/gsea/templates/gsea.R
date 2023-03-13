@@ -178,7 +178,7 @@ results <- read_delim_flexible(
 # Filter table based on p-value
 results <- subset(results, padj < opt$dsq_p_thresh)
 
-summary(results)
+# summary(results)
 
 # Sort by descending logfold change
 results <- results[order(results$log2FoldChange, decreasing = TRUE),]
@@ -267,55 +267,62 @@ genekitr::expoSheet(data_list = ora,
 ################################################
 ################################################
 
-gse$gsea_df$Hs_MF_ID <- gse$gsea_df$Description
-print(length(gse$gsea_df$Hs_MF_ID))
+gse$gsea_df[,1] <- gse$gsea_df$Description
+output_count <- length(gse$gsea_df[,1])
+print("GSE pathway result count")
+print(output_count)
 
-# Set pathway count to available ids/2
-up_down_pathway_count <-opt$pathway_count
-if(floor(length(gse$gsea_df$Hs_MF_ID) / 2) < opt$pathway_count) {
-    up_down_pathway_count <- floor(length(gse$gsea_df$Hs_MF_ID) / 2)
-    print(opt$pathway_count)
+if(output_count == 0) {
+    print("No GSE pathways detected")
+} else {
+    # Set pathway count to available ids/2
+    up_down_pathway_count <-opt$pathway_count
+    if(floor(output_count / 2) < opt$pathway_count) {
+        up_down_pathway_count <- floor(output_count / 2)
+        print("Adjusted pathway count")
+        print(opt$pathway_count)
+    }
+
+    # Volcano plot
+    png(
+        file = paste(opt$prefix, 'gsea.volcano.png', sep = '.'),
+        width = opt$plot_width,
+        height = opt$plot_height,
+        res = opt$plot_res
+    )
+    plotGSEA(gse, plot_type = "volcano", show_pathway = up_down_pathway_count, stats_metric = opt$stats_metric)
+    dev.off()
+
+    # Multi-pathway plot
+    png(
+        file = paste(opt$prefix, 'gsea.mpathway.png', sep = '.'),
+        width = opt$plot_width,
+        height = opt$plot_height,
+        res = opt$plot_res
+    )
+    plotGSEA(gse, plot_type = "fgsea", show_pathway = up_down_pathway_count, stats_metric = opt$stats_metric)
+    dev.off()
+
+    # Ridge plot
+    png(
+        file = paste(opt$prefix, 'gsea.ridge.png', sep = '.'),
+        width = opt$plot_width,
+        height = opt$plot_height,
+        res = opt$plot_res
+    )
+    plotGSEA(gse, plot_type = "ridge", show_pathway = opt$pathway_count, stats_metric = opt$stats_metric)
+    dev.off()
+
+    # Bar plot
+    png(
+        file = paste(opt$prefix, 'gsea.bar.png', sep = '.'),
+        width = opt$plot_width,
+        height = opt$plot_height,
+        res = opt$plot_res
+    )
+    plotGSEA(gse, plot_type = "bar", show_pathway = opt$pathway_count, stats_metric = opt$stats_metric)
+    dev.off()
 }
-
-# Volcano plot
-png(
-    file = paste(opt$prefix, 'gsea.volcano.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
-)
-plotGSEA(gse, plot_type = "volcano", show_pathway = up_down_pathway_count, stats_metric = opt$stats_metric)
-dev.off()
-
-# Multi-pathway plot
-png(
-    file = paste(opt$prefix, 'gsea.mpathway.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
-)
-plotGSEA(gse, plot_type = "fgsea", show_pathway = up_down_pathway_count, stats_metric = opt$stats_metric)
-dev.off()
-
-# Ridge plot
-png(
-    file = paste(opt$prefix, 'gsea.ridge.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
-)
-plotGSEA(gse, plot_type = "ridge", show_pathway = opt$pathway_count, stats_metric = opt$stats_metric)
-dev.off()
-
-# Bar plot
-png(
-    file = paste(opt$prefix, 'gsea.bar.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
-)
-plotGSEA(gse, plot_type = "bar", show_pathway = opt$pathway_count, stats_metric = opt$stats_metric)
-dev.off()
 
 ################################################
 ################################################
@@ -323,135 +330,143 @@ dev.off()
 ################################################
 ################################################
 
-# Bar
-png(
-    file = paste(opt$prefix, 'ora.bar.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
-)
-plotEnrich(ora_filt, plot_type = "bar", stats_metric = opt$stats_metric, term_metric = opt$term_metric)
-dev.off()
+output_count <- length(ora[,1])
+print("ORA pathway result count")
+print(output_count)
 
-# Bubble
-png(
-    file = paste(opt$prefix, 'ora.bubble.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
-)
-plotEnrich(
-    ora_filt,
-    plot_type = "bubble",
-    stats_metric = opt$stats_metric,
-    term_metric = opt$term_metric,
-    scale_ratio = opt$scale_ratio,
-    main_text_size = opt$main_text_size,
-    legend_text_size = opt$legend_text_size
-)
-dev.off()
+if(output_count == 0) {
+    print("No ORA pathways detected")
+} else {
+    # Bar
+    png(
+        file = paste(opt$prefix, 'ora.bar.png', sep = '.'),
+        width = opt$plot_width,
+        height = opt$plot_height,
+        res = opt$plot_res
+    )
+    plotEnrich(ora_filt, plot_type = "bar", stats_metric = opt$stats_metric, term_metric = opt$term_metric)
+    dev.off()
 
-# Dot
-png(
-    file = paste(opt$prefix, 'ora.dot.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
-)
-plotEnrich(
-    ora_filt,
-    plot_type = "dot",
-    stats_metric = opt$stats_metric,
-    term_metric = opt$term_metric,
-    scale_ratio = opt$scale_ratio,
-    main_text_size = opt$main_text_size,
-    legend_text_size = opt$legend_text_size
-)
-dev.off()
+    # Bubble
+    png(
+        file = paste(opt$prefix, 'ora.bubble.png', sep = '.'),
+        width = opt$plot_width,
+        height = opt$plot_height,
+        res = opt$plot_res
+    )
+    plotEnrich(
+        ora_filt,
+        plot_type = "bubble",
+        stats_metric = opt$stats_metric,
+        term_metric = opt$term_metric,
+        scale_ratio = opt$scale_ratio,
+        main_text_size = opt$main_text_size,
+        legend_text_size = opt$legend_text_size
+    )
+    dev.off()
 
-# Lollipop
-png(
-    file = paste(opt$prefix, 'ora.lollipop.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
-)
-plotEnrich(
-    ora_filt,
-    plot_type = "lollipop",
-    stats_metric = opt$stats_metric,
-    term_metric = opt$term_metric,
-    scale_ratio = opt$scale_ratio,
-    main_text_size = opt$main_text_size,
-    legend_text_size = opt$legend_text_size
-)
-dev.off()
+    # Dot
+    png(
+        file = paste(opt$prefix, 'ora.dot.png', sep = '.'),
+        width = opt$plot_width,
+        height = opt$plot_height,
+        res = opt$plot_res
+    )
+    plotEnrich(
+        ora_filt,
+        plot_type = "dot",
+        stats_metric = opt$stats_metric,
+        term_metric = opt$term_metric,
+        scale_ratio = opt$scale_ratio,
+        main_text_size = opt$main_text_size,
+        legend_text_size = opt$legend_text_size
+    )
+    dev.off()
 
-# Geneheat
-png(
-    file = paste(opt$prefix, 'ora.geneheat.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
-)
-plotEnrich(
-    ora_filt,
-    plot_type = "geneheat",
-    stats_metric = opt$stats_metric,
-    term_metric = opt$term_metric,
-    scale_ratio = opt$scale_ratio,
-    main_text_size = opt$main_text_size,
-    legend_text_size = opt$legend_text_size
-)
-dev.off()
+    # Lollipop
+    png(
+        file = paste(opt$prefix, 'ora.lollipop.png', sep = '.'),
+        width = opt$plot_width,
+        height = opt$plot_height,
+        res = opt$plot_res
+    )
+    plotEnrich(
+        ora_filt,
+        plot_type = "lollipop",
+        stats_metric = opt$stats_metric,
+        term_metric = opt$term_metric,
+        scale_ratio = opt$scale_ratio,
+        main_text_size = opt$main_text_size,
+        legend_text_size = opt$legend_text_size
+    )
+    dev.off()
 
-# Network
-png(
-    file = paste(opt$prefix, 'ora.network.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
-)
-plotEnrich(
-    ora_filt,
-    plot_type = "network",
-    stats_metric = opt$stats_metric,
-    term_metric = opt$term_metric,
-    scale_ratio = opt$scale_ratio,
-    main_text_size = opt$main_text_size,
-    legend_text_size = opt$legend_text_size
-)
-dev.off()
+    # Geneheat
+    png(
+        file = paste(opt$prefix, 'ora.geneheat.png', sep = '.'),
+        width = opt$plot_width,
+        height = opt$plot_height,
+        res = opt$plot_res
+    )
+    plotEnrich(
+        ora_filt,
+        plot_type = "geneheat",
+        stats_metric = opt$stats_metric,
+        term_metric = opt$term_metric,
+        scale_ratio = opt$scale_ratio,
+        main_text_size = opt$main_text_size,
+        legend_text_size = opt$legend_text_size
+    )
+    dev.off()
 
-# Gomap
-png(
-    file = paste(opt$prefix, 'ora.gomap.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
-)
-plotEnrich(
-    ora_filt,
-    plot_type = "gomap",
-    stats_metric = opt$stats_metric,
-    term_metric = opt$term_metric
-)
-dev.off()
+    # Network
+    png(
+        file = paste(opt$prefix, 'ora.network.png', sep = '.'),
+        width = opt$plot_width,
+        height = opt$plot_height,
+        res = opt$plot_res
+    )
+    plotEnrich(
+        ora_filt,
+        plot_type = "network",
+        stats_metric = opt$stats_metric,
+        term_metric = opt$term_metric,
+        scale_ratio = opt$scale_ratio,
+        main_text_size = opt$main_text_size,
+        legend_text_size = opt$legend_text_size
+    )
+    dev.off()
 
-# Goheat
-png(
-    file = paste(opt$prefix, 'ora.goheat.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
-)
-plotEnrich(
-    ora_filt,
-    plot_type = "goheat",
-    stats_metric = opt$stats_metric,
-    term_metric = opt$term_metric
-)
-dev.off()
+    # Gomap
+    png(
+        file = paste(opt$prefix, 'ora.gomap.png', sep = '.'),
+        width = opt$plot_width,
+        height = opt$plot_height,
+        res = opt$plot_res
+    )
+    plotEnrich(
+        ora_filt,
+        plot_type = "gomap",
+        stats_metric = opt$stats_metric,
+        term_metric = opt$term_metric
+    )
+    dev.off()
+
+    # Goheat
+    png(
+        file = paste(opt$prefix, 'ora.goheat.png', sep = '.'),
+        width = opt$plot_width,
+        height = opt$plot_height,
+        res = opt$plot_res
+    )
+    plotEnrich(
+        ora_filt,
+        plot_type = "goheat",
+        stats_metric = opt$stats_metric,
+        term_metric = opt$term_metric
+    )
+    dev.off()
+}
 
 ################################################
 ################################################
