@@ -220,14 +220,18 @@ workflow DIFF_ANALYSIS {
         //R_DESEQ2.out.results | view
 
         /*
+        * CHANNEL: Get the first rdata object from deseq2
+        */
+        ch_dsq2_rdata = R_DESEQ2.out.rdata
+            .collect()
+            .map{[[id:'dsq2'], it[1]]}
+        //ch_dsq2_rdata | view
+
+        /*
         * MODULE: Run deseq2 plots
         */
         R_DESEQ2_PLOTS (
-            R_DESEQ2.out.rdata,
-            params.contrast_column,
-            ch_comparisons.map { it[1] },
-            ch_comparisons.map { it[2] },
-            params.blocking_factors
+            ch_dsq2_rdata
         )
         ch_versions = ch_versions.mix(R_DESEQ2_PLOTS.out.versions)
 
@@ -235,11 +239,7 @@ workflow DIFF_ANALYSIS {
         * MODULE: Run pcaexplorer
         */
         R_PCAEXPLORER (
-            R_DESEQ2.out.rdata,
-            params.contrast_column,
-            ch_comparisons.map { it[1] },
-            ch_comparisons.map { it[2] },
-            params.blocking_factors
+            ch_dsq2_rdata
         )
         ch_versions = ch_versions.mix(R_PCAEXPLORER.out.versions)
 
