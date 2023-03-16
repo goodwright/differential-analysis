@@ -12,12 +12,12 @@
                     },
                     "r/deseq2": {
                         "branch": "dev",
-                        "git_sha": "86220b3d5c1f70f6523ab24960d514506a1142dd",
+                        "git_sha": "f08293cfcb8f385fcf0d48c7564f9f8a6aa916d7",
                         "installed_by": ["modules"]
                     },
                     "r/deseq2_plots": {
                         "branch": "dev",
-                        "git_sha": "86220b3d5c1f70f6523ab24960d514506a1142dd",
+                        "git_sha": "853695a71a6829980dd55250c4e9daead526f2a5",
                         "installed_by": ["modules"]
                     },
                     "r/gsea": {
@@ -27,7 +27,7 @@
                     },
                     "r/pcaexplorer": {
                         "branch": "dev",
-                        "git_sha": "c921383f21931f3745bde850656870b45102e729",
+                        "git_sha": "86c0c9414519a8ebe0ecb228c1c570676dafdb67",
                         "installed_by": ["modules"]
                     },
                     "r/volcano_plot": {

@@ -31,10 +31,6 @@ parse_args <- function(x){
 # Set defaults and classes
 opt <- list(
     deseq_rds = "!{rds}",
-    contrast_variable = "!{contrast_variable}",
-    reference_level = "!{reference_level}",
-    treatment_level = "!{treatment_level}",
-    blocking_variables = "!{blocking_variables}",
 
     plot_width = 1800,
     plot_height = 1200,
@@ -70,12 +66,8 @@ for ( ao in names(args_opt)){
     }
 }
 
-if (is.na(opt$blocking_variables) || opt$blocking_variables== '') {
-    opt$blocking_variables <- NULL
-}
-
 # Check if required parameters have been provided
-required_opts <- c('deseq_rds', 'contrast_variable', 'reference_level', 'treatment_level')
+required_opts <- c('deseq_rds')
 missing <- required_opts[unlist(lapply(opt[required_opts], is.null)) | ! required_opts %in% names(opt)]
 
 if (length(missing) > 0){
@@ -109,16 +101,12 @@ library(DESeq2)
 ################################################
 ################################################
 
-prefix_part_names <- c('contrast_variable', 'reference_level', 'treatment_level', 'blocking_variables')
-prefix_parts <- unlist(lapply(prefix_part_names, function(x) gsub("[^[:alnum:]]", "_", opt[[x]])))
-output_prefix <- paste(prefix_parts[prefix_parts != ''], collapse = '-')
-
 # Load RDS file
 dds <- readRDS(opt$deseq_rds)
 
 # Dispersion plot
 png(
-    file = paste(output_prefix, 'deseq2.dispersion.png', sep = '.'),
+    file = 'deseq2.dispersion.png',
     width = opt$plot_width,
     height = opt$plot_height,
     res = opt$plot_res,
@@ -129,7 +117,7 @@ dev.off()
 
 # MA plot
 png(
-    file = paste(output_prefix, 'deseq2.ma.png', sep = '.'),
+    file = 'deseq2.ma.png',
     width = opt$plot_width,
     height = opt$plot_height,
     res = opt$plot_res,
@@ -144,7 +132,7 @@ dev.off()
 ################################################
 ################################################
 
-sink(paste(output_prefix, "R_sessionInfo.log", sep = '.'))
+sink('R_sessionInfo.log')
 print(sessionInfo())
 sink()
 
