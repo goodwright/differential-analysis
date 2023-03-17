@@ -108,10 +108,6 @@ opt <- list(
 
     shrink_lfc = TRUE,
     lfcshrink_type = 'ashr'
-
-    # vs_method = 'vst', # 'rlog', 'vst', or 'rlog,vst'
-    # vs_blind = TRUE,
-    # vst_nsub = 1000
 )
 opt_types <- lapply(opt, class)
 
