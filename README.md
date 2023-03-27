@@ -35,14 +35,15 @@ nextflow run main.nf -profile test,docker
 
 Supplied using the `--counts` parameter. This is a numeric square matrix file, comma or tab-separated, with a column for every sample against a count of features. For example:
 
-|gene_id	gene_name	SRX8042381	SRX8042382	SRX8042383	SRX8042384	SRX8042385	SRX8042386
-|ENSMUSG00000023978	Prph2	10	2	4	27	716	2
-|ENSMUSG00000030324	Rho	181	14	12	143	4028	13
-|ENSMUSG00000031450	Grk1	20	3	1	13	457	5
-|ENSMUSG00000056055	Sag	52	3	10	72.999	1263	6
-|ENSMUSG00000025900	Rp1	17	3	2	9	285	3
-|ENSMUSG00000026834	Acvr1c	10	4	366.99	23	5	8
-|ENSMUSG00000025386	Pde6g	7	8	1	12	295	14
+| gene_id               | gene_name | SRX8042381 | SRX8042382 | SRX8042383 |
+| --------------------- | --------- | ---------- | ---------- | ---------- |
+| ENSMUSG00000023978	| Prph2     | 10         | 2          | 4          |
+| ENSMUSG00000030324	| Rho       | 181        | 14         | 12         |
+| ENSMUSG00000031450	| Grk1      | 20         | 3          | 1          |
+| ENSMUSG00000056055	| Sag       | 52         | 3          | 10         |
+| ENSMUSG00000025900	| Rp1       | 17         | 3          | 2          |
+| ENSMUSG00000026834	| Acvr1c    | 10         | 4          | 366        |
+| ENSMUSG00000025386	| Pde6g	    | 7          | 8          | 1          |
 
 At a minmimum an id column must be provided which is always defined as the first column. Additional info columns can be included for context which can be utilised by downstream processes such as gene name. Meta data is seperated from sample columns by the sample ids provided in the `samplesheet`
 
@@ -50,12 +51,12 @@ At a minmimum an id column must be provided which is always defined as the first
 
 Supplied using the `--samplesheet` parameter. At a minimum the samplesheet must contain a set of sample ids which match what is in the supplied counts file and at least one column to use as a comparison variable. Any number of additional status columns can be included for more complex experimental designs such as in the example below where an experimental condition and batch number are provided.
 
-| sample_id   | condition | batch                                                                |
-| ------- | --------- | ---------------------------------------------------------------------- | 
-| WT_REP1 | A         | 1 |
-| WT_REP2 | A         | 2 |
-| RAP1_UNINDUCED_REP1 | B         | 1 |
-| RAP1_UNINDUCED_REP2 | B         | 2 |
+| sample_id           | condition | batch |
+| ------------------- | --------- | ----- |
+| WT_REP1             | A         | 1     |
+| WT_REP2             | A         | 2     |
+| RAP1_UNINDUCED_REP1 | B         | 1     |
+| RAP1_UNINDUCED_REP2 | B         | 2     |
 
 ### Experimental Design
 
