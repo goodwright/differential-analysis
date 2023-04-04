@@ -12,7 +12,7 @@
                     },
                     "r/deseq2": {
                         "branch": "dev",
-                        "git_sha": "f08293cfcb8f385fcf0d48c7564f9f8a6aa916d7",
+                        "git_sha": "fdf9c2308a5c69b26b7e2c88549ce8dd91869510",
                         "installed_by": ["modules"]
                     },
                     "r/deseq2_plots": {

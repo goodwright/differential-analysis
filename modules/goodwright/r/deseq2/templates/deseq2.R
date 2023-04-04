@@ -45,7 +45,8 @@ read_delim_flexible <- function(file, header = TRUE, row.names = NULL){
         file,
         sep = separator,
         header = header,
-        row.names = row.names
+        row.names = row.names,
+        check.names = FALSE
     )
 }
 
@@ -108,6 +109,10 @@ opt <- list(
 
     shrink_lfc = TRUE,
     lfcshrink_type = 'ashr'
+
+    # vs_method = 'vst', # 'rlog', 'vst', or 'rlog,vst'
+    # vs_blind = TRUE,
+    # vst_nsub = 1000
 )
 opt_types <- lapply(opt, class)
 
@@ -179,6 +184,8 @@ sample.sheet <- read_delim_flexible(file = opt$sample_file)
 
 # Prepare the sample sheet
 rownames(sample.sheet) <- sample.sheet[[opt$sample_id_col]]
+
+# head(count.table)
 
 # Prepare the count table
 # Save any non-count data, will gene metadata etc we might need later
@@ -268,18 +275,6 @@ dds <- DESeqDataSetFromMatrix(
     design = model
 )
 
-# if (opt$control_genes_file != ''){
-#     control_genes <- readLines(opt$control_genes_file)
-#     if (! opt$sizefactors_from_controls){
-#         count.table <- count.table[setdiff(rownames(count.table), control_genes),]
-#     }
-# }
-
-# if (opt\$control_genes_file != '' && opt\$sizefactors_from_controls){
-#     print(paste('Estimating size factors using', length(control_genes), 'control genes'))
-#     dds <- estimateSizeFactors(dds, controlGenes=rownames(count.table) %in% control_genes)
-# }
-
 dds <- DESeq(
     dds,
     test = opt$test,
@@ -368,28 +363,6 @@ write.table(
     sep = '\t',
     quote = FALSE
 )
-
-# # Note very limited rounding for consistency of results
-# for (vs_method_name in strsplit(opt$vs_method, ',')){
-#     if (vs_method_name == 'vst'){
-#         vs_mat <- vst(dds, blind = opt$vs_blind, nsub = opt$vst_nsub)
-#     }else if (vs_method_name == 'rlog'){
-#         vs_mat <- rlog(dds, blind = opt$vs_blind, fitType = opt$fit_type)
-#     }
-
-#     # Again apply the slight rounding and then restore numeric
-#     write.table(
-#         data.frame(
-#             gene_id=rownames(counts(dds)),
-#             round_dataframe_columns(data.frame(assay(vs_mat)))
-#         ),
-#         file = paste(output_prefix, vs_method_name,'tsv', sep = '.'),
-#         col.names = TRUE,
-#         row.names = FALSE,
-#         sep = '\t',
-#         quote = FALSE
-#     )
-# }
 
 ################################################
 ################################################
