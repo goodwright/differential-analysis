@@ -89,7 +89,7 @@ def merge_counts_file(counts):
     return "merged_counts.tsv"
 
 
-def check_samplesheet(process_name, samplesheet, counts, count_sep, output):
+def check_samplesheet(process_name, samplesheet, counts, count_sep, output, is_multi):
     """
     This function checks that the samplesheet follows the following structure:
 
@@ -204,31 +204,55 @@ def check_samplesheet(process_name, samplesheet, counts, count_sep, output):
         for sample in count_header:
             count_dict[sample] = True
 
+    # Calculate output header
+    output_header = ["sample_id", "condition"]
+    extra_header = header[len(HEADER) :]
+    output_header = output_header + extra_header
+
+    # Prep file/folder
+    out_dir = os.path.dirname(output)
+    make_dir(out_dir)
+
     # Check that all samples in samplesheet are present in counts file
-    for sample in sample_dict.keys():
-        if sample not in count_dict.keys():
-            print_error("Sample id '{}' not found in counts file!".format(sample))
+    if is_multi == False:
+        for sample in sample_dict.keys():
+            if sample not in count_dict.keys():
+                print_error("Sample id '{}' not found in counts file!".format(sample))
+
+        # Write validated samplesheet with appropriate columns
+        if len(sample_dict) > 0:
+            with open(output, "w") as fout:
+                fout.write(",".join(output_header) + "\n")
+                for sample in sorted(sample_dict.keys()):
+                    fout.write(",".join(sample_dict[sample]) + "\n")
+    # Expand sample set out if needed to cover prefix names
+    else:
+        for sample in sample_dict.keys():
+            found = False
+            for count_sample in count_dict.keys():
+                if sample in count_sample:
+                    found = True
+            if found == False:
+                print_error("Sample id '{}' not found in counts file!".format(sample))
+
+        with open(output, "w") as fout:
+            fout.write(",".join(output_header) + "\n")
+            for sample in sample_dict.keys():
+                for count_sample in count_dict.keys():
+                    suffix = count_sample.split('_')[-1]
+                    if sample in count_sample:
+                        data = sample_dict[sample]
+                        new_data = []
+                        new_data.append(count_sample)
+                        for item in data[1:]:
+                            new_data.append(item + "_" + suffix)
+                        fout.write(",".join(new_data) + "\n")
+
 
     # # Check that all samples in counts file are present in samplesheet
     # for sample in count_dict.keys():
     #     if sample not in sample_dict.keys():
     #         print_error("Sample {} in counts file not found in samplesheet!".format(sample))
-
-    # Calculate output header
-    ouput_header = ["sample_id", "condition"]
-    extra_header = header[len(HEADER) :]
-    ouput_header = ouput_header + extra_header
-
-    # Write validated samplesheet with appropriate columns
-    if len(sample_dict) > 0:
-        out_dir = os.path.dirname(output)
-        make_dir(out_dir)
-        with open(output, "w") as fout:
-            fout.write(",".join(ouput_header) + "\n")
-
-            for sample in sorted(sample_dict.keys()):
-                fout.write(",".join(sample_dict[sample]) + "\n")
-
 
 if __name__ == "__main__":
     # Allows switching between nextflow templating and standalone python running using arguments
@@ -240,5 +264,10 @@ if __name__ == "__main__":
     parser.add_argument("--output", default="!{output}")
     args = parser.parse_args()
 
+    is_multi = False
+    counts_list = args.counts.split(" ")
+    if len(counts_list) > 1:
+        is_multi = True
+
     counts = merge_counts_file(args.counts)
-    check_samplesheet(args.process_name, args.samplesheet, counts, args.count_sep, args.output)
+    check_samplesheet(args.process_name, args.samplesheet, counts, args.count_sep, args.output, is_multi)

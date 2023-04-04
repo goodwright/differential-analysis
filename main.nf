@@ -51,7 +51,7 @@ ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
 comparisons = params.comparisons ? params.comparisons.split(':').collect{ it.trim() } : null
 
 // Split count file input into list
-count_files = params.counts.split(',').collect{ file(it.trim(), checkIfExists: true) }
+count_files = params.counts.split(',').collect{ file(it.trim(), checkIfExists: true) }.flatten()
 
 // Collect blocking variable
 ch_blocking_factors = params.blocking_factors ? params.blocking_factors.split('/').collect{ it.trim() } : null
@@ -152,6 +152,7 @@ workflow DIFF_ANALYSIS {
         if (count_files.size() > 1) {
             ch_counts = SAMPLE_DIFF_SAMPLESHEET_CHECK.out.counts
         }
+        // ch_counts | view
 
         /*
         * MODULE: Parse samplesheet into meta and fastq files
