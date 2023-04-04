@@ -228,33 +228,37 @@ workflow DIFF_ANALYSIS {
             .map{[[id:'dsq2'], it[1]]}
         //ch_dsq2_rdata | view
 
-        /*
-        * MODULE: Run deseq2 plots
-        */
-        R_DESEQ2_PLOTS (
-            ch_dsq2_rdata
-        )
-        ch_versions = ch_versions.mix(R_DESEQ2_PLOTS.out.versions)
+        if (params.run_study_plots) {
+            /*
+            * MODULE: Run deseq2 plots
+            */
+            R_DESEQ2_PLOTS (
+                ch_dsq2_rdata
+            )
+            ch_versions = ch_versions.mix(R_DESEQ2_PLOTS.out.versions)
 
-        /*
-        * MODULE: Run pcaexplorer
-        */
-        R_PCAEXPLORER (
-            ch_dsq2_rdata
-        )
-        ch_versions = ch_versions.mix(R_PCAEXPLORER.out.versions)
+            /*
+            * MODULE: Run pcaexplorer
+            */
+            R_PCAEXPLORER (
+                ch_dsq2_rdata
+            )
+            ch_versions = ch_versions.mix(R_PCAEXPLORER.out.versions)
+        }
 
         /*
         * MODULE: Run Volcano Plot
         */
-        R_VOLCANO_PLOT (
-            R_DESEQ2.out.results,
-            params.contrast_column,
-            ch_comparisons.map { it[1] },
-            ch_comparisons.map { it[2] },
-            params.blocking_factors
-        )
-        ch_versions = ch_versions.mix(R_VOLCANO_PLOT.out.versions)
+        if (params.run_volcano) {
+            R_VOLCANO_PLOT (
+                R_DESEQ2.out.results,
+                params.contrast_column,
+                ch_comparisons.map { it[1] },
+                ch_comparisons.map { it[2] },
+                params.blocking_factors
+            )
+            ch_versions = ch_versions.mix(R_VOLCANO_PLOT.out.versions)
+        }
     }
 
     if(params.run_gsea) {
