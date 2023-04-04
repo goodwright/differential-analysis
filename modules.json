@@ -36,8 +36,8 @@
                         "installed_by": ["modules"]
                     },
                     "sample/diff_samplesheet_check": {
-                        "branch": "master",
-                        "git_sha": "3ec6194034deb1f1b35af3531b0626ff9699a90f",
+                        "branch": "dev",
+                        "git_sha": "5b90ea8b34bfffa16e32b5add98bd1d1d12dcbac",
                         "installed_by": ["modules"]
                     },
                     "util/logging": {

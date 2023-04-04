@@ -54,6 +54,18 @@ def merge_counts_file(counts):
         # Load counts file
         df = pd.read_csv(count_file, sep="\t", index_col=0)
 
+        # Get file name and extract sample suffix
+        count_file_name = os.path.basename(count_file)
+        count_file_name = os.path.splitext(count_file_name)[0]
+        split = count_file_name.split('_')
+        suffix = split[-1]
+
+        # Append suffix
+        df.columns = [str(col) + '_' + suffix for col in df.columns]
+
+        # Rename gene name if it exists
+        df.columns = df.columns.str.replace("gene_name_" + suffix, "gene_name")
+
         # Save index column and sort names out
         index_name = df.index.name
         df.index.name = "index"
