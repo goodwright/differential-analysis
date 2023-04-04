@@ -82,7 +82,7 @@ jobs:
         run: |
           nf-test test \
             --profile=test,${{ matrix.profile }} \
-            tests/${{ matrix.test }}/*.nf.test \
+            tests/nftest/${{ matrix.test }}.nf.test \
             --tap=test.tap
 
       - uses: pcolby/tap-summary@v1
