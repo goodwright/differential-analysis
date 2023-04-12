@@ -5,6 +5,7 @@ import sys
 import errno
 import argparse
 import platform
+import distutils
 
 import pandas as pd
 from functools import reduce
@@ -54,14 +55,14 @@ def merge_counts_file(counts):
         # Load counts file
         df = pd.read_csv(count_file, sep="\t", index_col=0)
 
-        # Get file name and extract sample suffix
+        # Get file name and extract sample suffix
         count_file_name = os.path.basename(count_file)
         count_file_name = os.path.splitext(count_file_name)[0]
-        split = count_file_name.split('_')
+        split = count_file_name.split("_")
         suffix = split[-1]
 
         # Append suffix
-        df.columns = [str(col) + '_' + suffix for col in df.columns]
+        df.columns = [str(col) + "_" + suffix for col in df.columns]
 
         # Rename gene name if it exists
         df.columns = df.columns.str.replace("gene_name_" + suffix, "gene_name")
@@ -239,7 +240,7 @@ def check_samplesheet(process_name, samplesheet, counts, count_sep, output, is_m
             fout.write(",".join(output_header) + "\n")
             for sample in sample_dict.keys():
                 for count_sample in count_dict.keys():
-                    suffix = count_sample.split('_')[-1]
+                    suffix = count_sample.split("_")[-1]
                     if sample in count_sample:
                         data = sample_dict[sample]
                         new_data = []
@@ -249,11 +250,6 @@ def check_samplesheet(process_name, samplesheet, counts, count_sep, output, is_m
                         fout.write(",".join(new_data) + "\n")
 
 
-    # # Check that all samples in counts file are present in samplesheet
-    # for sample in count_dict.keys():
-    #     if sample not in sample_dict.keys():
-    #         print_error("Sample {} in counts file not found in samplesheet!".format(sample))
-
 if __name__ == "__main__":
     # Allows switching between nextflow templating and standalone python running using arguments
     parser = argparse.ArgumentParser()
@@ -262,12 +258,19 @@ if __name__ == "__main__":
     parser.add_argument("--counts", default="!{counts}")
     parser.add_argument("--count-sep", default="!{count_sep}")
     parser.add_argument("--output", default="!{output}")
+    parser.add_argument("--add-multi-suffix", default="!{add_multi_suffix}")
     args = parser.parse_args()
 
+    # Check for multiple count files
     is_multi = False
     counts_list = args.counts.split(" ")
     if len(counts_list) > 1:
         is_multi = True
+
+    # Only enable if explicit
+    add_multi_suffix = bool(distutils.util.strtobool(args.add_multi_suffix))
+    if args.add_multi_suffix == False:
+        is_multi = False
 
     counts = merge_counts_file(args.counts)
     check_samplesheet(args.process_name, args.samplesheet, counts, args.count_sep, args.output, is_multi)

@@ -49,6 +49,13 @@ read_delim_flexible <- function(file, header = TRUE, row.names = NULL){
     )
 }
 
+#' Stop script without error
+stop_quietly <- function() {
+    opt <- options(show.error.messages = FALSE)
+    on.exit(options(opt))
+    quit()
+}
+
 #####################################################
 #####################################################
 ## PARSE PARAMETERS FROM NEXTFLOW AND COMMAND LINE ##
@@ -84,7 +91,7 @@ opt <- list(
     # General Plotting params
     plot_width = 1800,
     plot_height = 1200,
-    plot_res = 300
+    plot_res = 200
 )
 opt_types <- lapply(opt, class)
 
@@ -175,10 +182,12 @@ results <- read_delim_flexible(
     header = TRUE
 )
 
-# Filter table based on p-value
-results <- subset(results, padj < opt$dsq_p_thresh)
+summary(results)
 
-# summary(results)
+# Filter table based on p-value
+results <- subset(results, padj <= opt$dsq_p_thresh)
+
+summary(results)
 
 # Sort by descending logfold change
 results <- results[order(results$log2FoldChange, decreasing = TRUE),]
@@ -190,8 +199,12 @@ names(gene_list) <- results$gene_id
 # Get up genes
 results_up <- subset(results, log2FoldChange >= 0)
 
-#Get down genes
+# Get down genes
 results_down <- subset(results, log2FoldChange < 0)
+
+if (nrow(results) == 0) {
+    stop_quietly()
+}
 
 ################################################
 ################################################
@@ -201,15 +214,24 @@ results_down <- subset(results, log2FoldChange < 0)
 
 gs <- geneset::getGO(org=opt$organism, ont=opt$ontology)
 
-gse <- genGSEA(
-    genelist=gene_list,
-    geneset=gs,
-    padj_method=opt$p_adjust_method,
-    min_gset_size=opt$min_gset_size,
-    max_gset_size=opt$max_gset_size,
-    p_cutoff=opt$gsea_p_cutoff,
-    q_cutoff=opt$gsea_q_cutoff
+genGSEA_TC <- tryCatch (
+    {
+        gse <- genGSEA(
+            genelist=gene_list,
+            geneset=gs,
+            padj_method=opt$p_adjust_method,
+            min_gset_size=opt$min_gset_size,
+            max_gset_size=opt$max_gset_size,
+            p_cutoff=opt$gsea_p_cutoff,
+            q_cutoff=opt$gsea_q_cutoff
+        )
+    },
+    error=function(cond) {
+            message(cond)
+            stop_quietly()
+    }
 )
+genGSEA_TC
 
 ora <- genORA(
     results$gene_id,
@@ -320,7 +342,7 @@ if(output_count == 0) {
         height = opt$plot_height,
         res = opt$plot_res
     )
-    plotGSEA(gse, plot_type = "bar", show_pathway = opt$pathway_count, stats_metric = opt$stats_metric)
+    plotGSEA(gse, plot_type = "bar", show_pathway = opt$pathway_count, stats_metric = opt$stats_metric, colour = c("red", "darkgreen"))
     dev.off()
 }
 

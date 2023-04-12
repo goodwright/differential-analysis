@@ -107,7 +107,7 @@ opt <- list(
     alpha = 0.1,
     minmu = 0.5,
 
-    shrink_lfc = TRUE,
+    shrink_lfc = FALSE,
     lfcshrink_type = 'ashr'
 
     # vs_method = 'vst', # 'rlog', 'vst', or 'rlog,vst'
@@ -325,13 +325,22 @@ contrast.name <-
     paste(opt$treatment_level, opt$reference_level, sep = "_vs_")
 cat("Saving results for ", contrast.name, " ...\n", sep = "")
 
+# Sort output table by padj and pvalue
+comp.results <- comp.results[order(comp.results$padj, comp.results$pvalue, decreasing = FALSE),]
+
+# Merge noncount data back into results table and move the last column (should be gene name) back into order
+output_results <- data.frame(gene_id = rownames(comp.results), round_dataframe_columns(data.frame(comp.results)))
+output_results <- merge(output_results, noncount.table, by=0)
+output_results <- output_results[,c(1,ncol(output_results),3:(ncol(output_results)-1))]
+names(output_results)[names(output_results) == 'Row.names'] <- 'gene_id'
+
+# Sort output table by padj and pvalue
+output_results <- output_results[order(output_results$padj, output_results$pvalue, decreasing = FALSE),]
+
 # Differential expression table- note very limited rounding for consistency of
 # results
 write.table(
-    data.frame(
-        gene_id = rownames(comp.results),
-        round_dataframe_columns(data.frame(comp.results))
-    ),
+    output_results,
     file = paste(output_prefix, 'deseq2.results.tsv', sep = '.'),
     col.names = TRUE,
     row.names = FALSE,
