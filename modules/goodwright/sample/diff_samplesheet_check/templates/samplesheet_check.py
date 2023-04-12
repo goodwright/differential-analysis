@@ -39,7 +39,7 @@ def dump_versions(process_name):
         out_f.write("    python: " + platform.python_version() + "\n")
 
 
-def merge_counts_file(counts):
+def merge_counts_file(counts, is_multi):
     # Split counts file list by space
     counts_list = counts.split(" ")
 
@@ -61,11 +61,12 @@ def merge_counts_file(counts):
         split = count_file_name.split("_")
         suffix = split[-1]
 
-        # Append suffix
-        df.columns = [str(col) + "_" + suffix for col in df.columns]
+        if is_multi:
+            # Append suffix
+            df.columns = [str(col) + "_" + suffix for col in df.columns]
 
-        # Rename gene name if it exists
-        df.columns = df.columns.str.replace("gene_name_" + suffix, "gene_name")
+            # Rename gene name if it exists
+            df.columns = df.columns.str.replace("gene_name_" + suffix, "gene_name")
 
         # Save index column and sort names out
         index_name = df.index.name
@@ -265,12 +266,14 @@ if __name__ == "__main__":
     is_multi = False
     counts_list = args.counts.split(" ")
     if len(counts_list) > 1:
+        print("Detected multiple count files")
         is_multi = True
 
     # Only enable if explicit
     add_multi_suffix = bool(distutils.util.strtobool(args.add_multi_suffix))
-    if args.add_multi_suffix == False:
+    if add_multi_suffix == False:
+        print("Multi suffix param off")
         is_multi = False
 
-    counts = merge_counts_file(args.counts)
+    counts = merge_counts_file(args.counts, is_multi)
     check_samplesheet(args.process_name, args.samplesheet, counts, args.count_sep, args.output, is_multi)
