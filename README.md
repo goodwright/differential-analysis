@@ -69,11 +69,19 @@ The experimental design that defines which comparisons and blocking factors are 
 
 ## Output
 
-Pipeline output will default to the path `./results` unless modified with the `--outdir` parameter. The output consists of a `deseq2` folder that contains critical output data pertaining to the differential analysis comparisons. Additional folders are outputted depending on which additional processing modules are active and are clearly named. For example the geneset enrichment analysis module is names `gsea`.
+Pipeline output will default to the path `./results` unless modified with the `--outdir` parameter.
 
-The `deseq2` will always contain the size factors and normalised counts in its root folder as well as a `plots` folder that contains experiment-level diagnostic plots such as the dispersion and ma plots. For each comparison an additional sub-folder will be included that contains the primary output results table and any other comparison specific plots.
+The `deseq2` folder contains output data pertaining to the differential analysis comparisons. The folder will always contain the size factors and normalised counts in its root folder as well as a `plots` folder that contains experiment-level diagnostic plots such as the dispersion and ma plots. 
+
+For each comparison an additional sub-folder will be included that contains the primary output results table and any other comparison specific plots such as Volcano plots.
+
+Additional folders are outputted depending on which additional processing modules are active and are clearly named. For example the geneset enrichment analysis module is names `gsea`.
 
 ## Pipeline Parameters
+
+- `--study_name`: All output from the pipeline will be placed in the directory `$outdir/$study_name`. This is so several runs with different parameters can be performed without needing to worry about mixing up results. The default path is `results/study`.
+
+- `--count_sep`: Defines the count separator used in the input count files. Defaults to tab `\t`
 
 ### Differential Analysis
 
