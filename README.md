@@ -71,7 +71,7 @@ The experimental design that defines which comparisons and blocking factors are 
 
 Pipeline output will default to the path `./results` unless modified with the `--outdir` parameter.
 
-The `deseq2` folder contains output data pertaining to the differential analysis comparisons. The folder will always contain the size factors and normalised counts in its root folder as well as a `plots` folder that contains experiment-level diagnostic plots such as the dispersion and ma plots. 
+The `deseq2` folder contains output data pertaining to the differential analysis comparisons. The folder will always contain the size factors and normalised counts in its root folder as well as a `plots` folder that contains experiment-level diagnostic plots such as the dispersion and ma plots.
 
 For each comparison an additional sub-folder will be included that contains the primary output results table and any other comparison specific plots such as Volcano plots.
 
