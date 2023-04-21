@@ -1,5 +1,5 @@
 nextflow_pipeline {
-    name "test_multi_count"
+    name "test_gsea"
     script "main.nf"
 
     test("run_test") {

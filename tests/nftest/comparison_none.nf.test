@@ -1,9 +1,8 @@
 nextflow_pipeline {
 
-    name "params_no_comparisons"
+    name "test_no_comparisons"
     script "main.nf"
 
-    // Test when there are no comparisons specified
     test("run_test") {
         when {
             params {

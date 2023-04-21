@@ -1,9 +1,8 @@
 nextflow_pipeline {
 
-    name "params_single_comparison"
+    name "test_single_comparison"
     script "main.nf"
 
-    // Test with a single comparison
     test("run_test") {
         when {
             params {
