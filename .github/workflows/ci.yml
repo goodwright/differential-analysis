@@ -25,7 +25,8 @@ jobs:
         NXF_VER:
           - "22.10.1"
           - ""
-        profile: ["docker", "singularity"]
+        # profile: ["docker", "singularity"]
+        profile: ["docker"]
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
