@@ -15,7 +15,6 @@ nextflow_pipeline {
         }
 
         then {
-            // Test results
             assert workflow.success
 
             assert new File("$outputDir/test_study/deseq2/deseq2.sizefactors.tsv").exists()
