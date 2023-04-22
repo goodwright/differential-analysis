@@ -1,0 +1,30 @@
+nextflow_pipeline {
+
+    name "test_blocking_factor"
+    script "main.nf"
+
+    test("run_test") {
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_gsea = true
+                samplesheet = "./tests/data/samplesheets/test_wblocking.csv"
+                counts = "./tests/data/counts/nfcore_rnaseq_test_salmon_gene_counts.tsv"
+            }
+        }
+
+        then {
+            // Test results
+            assert workflow.success
+
+            // assert new File("$outputDir/test_study/deseq2/deseq2.sizefactors.tsv").exists()
+            // assert path("$outputDir/test_study/deseq2/deseq2.sizefactors.tsv").md5 == "0a3f749c2f8a7817819d2f70e1e24c46"
+
+            // assert new File("$outputDir/test_study/deseq2/normalised_counts.tsv").exists()
+            // assert path("$outputDir/test_study/deseq2/normalised_counts.tsv").md5 == "98b790f910b861d079ed8df2319667b1"
+
+            // assert new File("$outputDir/test_study/deseq2/condition:C_A/condition-C-A.deseq2.results.tsv").exists()
+            // assert path("$outputDir/test_study/deseq2/condition:C_A/condition-C-A.deseq2.results.tsv").md5 == "db3165db91f4206bf76dc7c6be9bd58c"
+        }
+    }
+}

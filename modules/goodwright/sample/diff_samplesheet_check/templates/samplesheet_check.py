@@ -5,6 +5,7 @@ import sys
 import errno
 import argparse
 import platform
+import distutils
 
 import pandas as pd
 from functools import reduce
@@ -38,7 +39,7 @@ def dump_versions(process_name):
         out_f.write("    python: " + platform.python_version() + "\n")
 
 
-def merge_counts_file(counts):
+def merge_counts_file(counts, is_multi):
     # Split counts file list by space
     counts_list = counts.split(" ")
 
@@ -53,6 +54,19 @@ def merge_counts_file(counts):
     for count_file in counts_list:
         # Load counts file
         df = pd.read_csv(count_file, sep="\t", index_col=0)
+
+        # Get file name and extract sample suffix
+        count_file_name = os.path.basename(count_file)
+        count_file_name = os.path.splitext(count_file_name)[0]
+        split = count_file_name.split("_")
+        suffix = split[-1]
+
+        if is_multi:
+            # Append suffix
+            df.columns = [str(col) + "_" + suffix for col in df.columns]
+
+            # Rename gene name if it exists
+            df.columns = df.columns.str.replace("gene_name_" + suffix, "gene_name")
 
         # Save index column and sort names out
         index_name = df.index.name
@@ -77,7 +91,7 @@ def merge_counts_file(counts):
     return "merged_counts.tsv"
 
 
-def check_samplesheet(process_name, samplesheet, counts, count_sep, output):
+def check_samplesheet(process_name, samplesheet, counts, count_sep, output, is_multi):
     """
     This function checks that the samplesheet follows the following structure:
 
@@ -192,30 +206,49 @@ def check_samplesheet(process_name, samplesheet, counts, count_sep, output):
         for sample in count_header:
             count_dict[sample] = True
 
-    # Check that all samples in samplesheet are present in counts file
-    for sample in sample_dict.keys():
-        if sample not in count_dict.keys():
-            print_error("Sample id '{}' not found in counts file!".format(sample))
-
-    # # Check that all samples in counts file are present in samplesheet
-    # for sample in count_dict.keys():
-    #     if sample not in sample_dict.keys():
-    #         print_error("Sample {} in counts file not found in samplesheet!".format(sample))
-
     # Calculate output header
-    ouput_header = ["sample_id", "condition"]
+    output_header = ["sample_id", "condition"]
     extra_header = header[len(HEADER) :]
-    ouput_header = ouput_header + extra_header
+    output_header = output_header + extra_header
 
-    # Write validated samplesheet with appropriate columns
-    if len(sample_dict) > 0:
-        out_dir = os.path.dirname(output)
-        make_dir(out_dir)
+    # Prep file/folder
+    out_dir = os.path.dirname(output)
+    make_dir(out_dir)
+
+    # Check that all samples in samplesheet are present in counts file
+    if is_multi == False:
+        for sample in sample_dict.keys():
+            if sample not in count_dict.keys():
+                print_error("Sample id '{}' not found in counts file!".format(sample))
+
+        # Write validated samplesheet with appropriate columns
+        if len(sample_dict) > 0:
+            with open(output, "w") as fout:
+                fout.write(",".join(output_header) + "\n")
+                for sample in sorted(sample_dict.keys()):
+                    fout.write(",".join(sample_dict[sample]) + "\n")
+    # Expand sample set out if needed to cover prefix names
+    else:
+        for sample in sample_dict.keys():
+            found = False
+            for count_sample in count_dict.keys():
+                if sample in count_sample:
+                    found = True
+            if found == False:
+                print_error("Sample id '{}' not found in counts file!".format(sample))
+
         with open(output, "w") as fout:
-            fout.write(",".join(ouput_header) + "\n")
-
-            for sample in sorted(sample_dict.keys()):
-                fout.write(",".join(sample_dict[sample]) + "\n")
+            fout.write(",".join(output_header) + "\n")
+            for sample in sample_dict.keys():
+                for count_sample in count_dict.keys():
+                    suffix = count_sample.split("_")[-1]
+                    if sample in count_sample:
+                        data = sample_dict[sample]
+                        new_data = []
+                        new_data.append(count_sample)
+                        for item in data[1:]:
+                            new_data.append(item + "_" + suffix)
+                        fout.write(",".join(new_data) + "\n")
 
 
 if __name__ == "__main__":
@@ -226,7 +259,21 @@ if __name__ == "__main__":
     parser.add_argument("--counts", default="!{counts}")
     parser.add_argument("--count-sep", default="!{count_sep}")
     parser.add_argument("--output", default="!{output}")
+    parser.add_argument("--add-multi-suffix", default="!{add_multi_suffix}")
     args = parser.parse_args()
 
-    counts = merge_counts_file(args.counts)
-    check_samplesheet(args.process_name, args.samplesheet, counts, args.count_sep, args.output)
+    # Check for multiple count files
+    is_multi = False
+    counts_list = args.counts.split(" ")
+    if len(counts_list) > 1:
+        print("Detected multiple count files")
+        is_multi = True
+
+    # Only enable if explicit
+    add_multi_suffix = bool(distutils.util.strtobool(args.add_multi_suffix))
+    if add_multi_suffix == False:
+        print("Multi suffix param off")
+        is_multi = False
+
+    counts = merge_counts_file(args.counts, is_multi)
+    check_samplesheet(args.process_name, args.samplesheet, counts, args.count_sep, args.output, is_multi)

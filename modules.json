@@ -12,22 +12,22 @@
                     },
                     "r/deseq2": {
                         "branch": "dev",
-                        "git_sha": "86220b3d5c1f70f6523ab24960d514506a1142dd",
+                        "git_sha": "7d6a9447f3528abee2a0c622c6f81355cb51446b",
                         "installed_by": ["modules"]
                     },
                     "r/deseq2_plots": {
                         "branch": "dev",
-                        "git_sha": "86220b3d5c1f70f6523ab24960d514506a1142dd",
+                        "git_sha": "853695a71a6829980dd55250c4e9daead526f2a5",
                         "installed_by": ["modules"]
                     },
                     "r/gsea": {
                         "branch": "master",
-                        "git_sha": "c8be2a911b5cc96b65079eead36b45c9564805d7",
+                        "git_sha": "ec0603799b0bb81bb25cae712c54b1fe53feec52",
                         "installed_by": ["modules"]
                     },
                     "r/pcaexplorer": {
                         "branch": "dev",
-                        "git_sha": "c921383f21931f3745bde850656870b45102e729",
+                        "git_sha": "86c0c9414519a8ebe0ecb228c1c570676dafdb67",
                         "installed_by": ["modules"]
                     },
                     "r/volcano_plot": {
@@ -36,8 +36,8 @@
                         "installed_by": ["modules"]
                     },
                     "sample/diff_samplesheet_check": {
-                        "branch": "master",
-                        "git_sha": "3ec6194034deb1f1b35af3531b0626ff9699a90f",
+                        "branch": "dev",
+                        "git_sha": "0bdfa1695353883c903e226eb6b530395f1abdf4",
                         "installed_by": ["modules"]
                     },
                     "util/logging": {

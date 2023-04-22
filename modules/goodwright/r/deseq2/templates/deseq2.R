@@ -45,7 +45,8 @@ read_delim_flexible <- function(file, header = TRUE, row.names = NULL){
         file,
         sep = separator,
         header = header,
-        row.names = row.names
+        row.names = row.names,
+        check.names = FALSE
     )
 }
 
@@ -106,7 +107,7 @@ opt <- list(
     alpha = 0.1,
     minmu = 0.5,
 
-    shrink_lfc = TRUE,
+    shrink_lfc = FALSE,
     lfcshrink_type = 'ashr'
 
     # vs_method = 'vst', # 'rlog', 'vst', or 'rlog,vst'
@@ -183,6 +184,8 @@ sample.sheet <- read_delim_flexible(file = opt$sample_file)
 
 # Prepare the sample sheet
 rownames(sample.sheet) <- sample.sheet[[opt$sample_id_col]]
+
+# head(count.table)
 
 # Prepare the count table
 # Save any non-count data, will gene metadata etc we might need later
@@ -272,18 +275,6 @@ dds <- DESeqDataSetFromMatrix(
     design = model
 )
 
-# if (opt$control_genes_file != ''){
-#     control_genes <- readLines(opt$control_genes_file)
-#     if (! opt$sizefactors_from_controls){
-#         count.table <- count.table[setdiff(rownames(count.table), control_genes),]
-#     }
-# }
-
-# if (opt\$control_genes_file != '' && opt\$sizefactors_from_controls){
-#     print(paste('Estimating size factors using', length(control_genes), 'control genes'))
-#     dds <- estimateSizeFactors(dds, controlGenes=rownames(count.table) %in% control_genes)
-# }
-
 dds <- DESeq(
     dds,
     test = opt$test,
@@ -334,13 +325,22 @@ contrast.name <-
     paste(opt$treatment_level, opt$reference_level, sep = "_vs_")
 cat("Saving results for ", contrast.name, " ...\n", sep = "")
 
+# Sort output table by padj and pvalue
+comp.results <- comp.results[order(comp.results$padj, comp.results$pvalue, decreasing = FALSE),]
+
+# Merge noncount data back into results table and move the last column (should be gene name) back into order
+output_results <- data.frame(gene_id = rownames(comp.results), round_dataframe_columns(data.frame(comp.results)))
+output_results <- merge(output_results, noncount.table, by=0)
+output_results <- output_results[,c(1,ncol(output_results),3:(ncol(output_results)-1))]
+names(output_results)[names(output_results) == 'Row.names'] <- 'gene_id'
+
+# Sort output table by padj and pvalue
+output_results <- output_results[order(output_results$padj, output_results$pvalue, decreasing = FALSE),]
+
 # Differential expression table- note very limited rounding for consistency of
 # results
 write.table(
-    data.frame(
-        gene_id = rownames(comp.results),
-        round_dataframe_columns(data.frame(comp.results))
-    ),
+    output_results,
     file = paste(output_prefix, 'deseq2.results.tsv', sep = '.'),
     col.names = TRUE,
     row.names = FALSE,
@@ -356,7 +356,7 @@ sf_df = data.frame(sample = names(sizeFactors(dds)), data.frame(sizeFactors(dds)
 colnames(sf_df) <- c('sample', 'sizeFactor')
 write.table(
     sf_df,
-    file = paste(output_prefix, 'deseq2.sizefactors.tsv', sep = '.'),
+    file = 'deseq2.sizefactors.tsv',
     col.names = TRUE,
     row.names = FALSE,
     sep = '\t',
@@ -366,34 +366,12 @@ write.table(
 # Write specified matrices
 write.table(
     data.frame(gene_id=rownames(counts(dds)), counts(dds, normalized = TRUE)),
-    file = paste(output_prefix, 'normalised_counts.tsv', sep = '.'),
+    file = 'normalised_counts.tsv',
     col.names = TRUE,
     row.names = FALSE,
     sep = '\t',
     quote = FALSE
 )
-
-# # Note very limited rounding for consistency of results
-# for (vs_method_name in strsplit(opt$vs_method, ',')){
-#     if (vs_method_name == 'vst'){
-#         vs_mat <- vst(dds, blind = opt$vs_blind, nsub = opt$vst_nsub)
-#     }else if (vs_method_name == 'rlog'){
-#         vs_mat <- rlog(dds, blind = opt$vs_blind, fitType = opt$fit_type)
-#     }
-
-#     # Again apply the slight rounding and then restore numeric
-#     write.table(
-#         data.frame(
-#             gene_id=rownames(counts(dds)),
-#             round_dataframe_columns(data.frame(assay(vs_mat)))
-#         ),
-#         file = paste(output_prefix, vs_method_name,'tsv', sep = '.'),
-#         col.names = TRUE,
-#         row.names = FALSE,
-#         sep = '\t',
-#         quote = FALSE
-#     )
-# }
 
 ################################################
 ################################################

@@ -22,6 +22,7 @@ process SAMPLE_DIFF_SAMPLESHEET_CHECK {
 
     shell:
     process_name = task.process
-    output       = task.ext.output ?: 'samplesheet.valid.csv'
+    output           = task.ext.output ?: 'samplesheet.valid.csv'
+    add_multi_suffix = task.ext.add_multi_suffix ?: "False"
     template 'samplesheet_check.py'
 }

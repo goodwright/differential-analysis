@@ -31,10 +31,6 @@ parse_args <- function(x){
 # Set defaults and classes
 opt <- list(
     deseq_rds = "!{rds}",
-    contrast_variable = "!{contrast_variable}",
-    reference_level = "!{reference_level}",
-    treatment_level = "!{treatment_level}",
-    blocking_variables = "!{blocking_variables}",
 
     pca_title = NULL,
     pca_num_genes = 1000,
@@ -85,12 +81,8 @@ for ( ao in names(args_opt)){
     }
 }
 
-if (is.na(opt$blocking_variables) || opt$blocking_variables== '') {
-    opt$blocking_variables <- NULL
-}
-
 # Check if required parameters have been provided
-required_opts <- c('deseq_rds', 'contrast_variable', 'reference_level', 'treatment_level')
+required_opts <- c('deseq_rds')
 missing <- required_opts[unlist(lapply(opt[required_opts], is.null)) | ! required_opts %in% names(opt)]
 
 if (length(missing) > 0){
@@ -125,10 +117,6 @@ library(pcaExplorer)
 ################################################
 ################################################
 
-prefix_part_names <- c('contrast_variable', 'reference_level', 'treatment_level', 'blocking_variables')
-prefix_parts <- unlist(lapply(prefix_part_names, function(x) gsub("[^[:alnum:]]", "_", opt[[x]])))
-output_prefix <- paste(prefix_parts[prefix_parts != ''], collapse = '-')
-
 # Load RDS file
 dds <- readRDS(opt$deseq_rds)
 
@@ -137,15 +125,15 @@ dds_rlog <- rlogTransformation(dds)
 
 # Create intgroup
 intgroup.vars <- c(opt$contrast_variable)
-# if (!is.null(opt$blocking_variables)) {
-#     blocking.vars = unlist(strsplit(opt$blocking_variables, split = ';'))
-#     intgroup.vars <- c(intgroup.vars, blocking.vars)
-# }
+if (!is.null(opt$blocking_variables)) {
+    blocking.vars = unlist(strsplit(opt$blocking_variables, split = ';'))
+    intgroup.vars <- c(intgroup, blocking.vars)
+}
 
 # PCA Plot
-pca_title <- ifelse(is.null(opt$pca_title), paste('PCA Plot', output_prefix), opt$pca_title)
+pca_title <- ifelse(is.null(opt$pca_title), 'PCA Plot', opt$pca_title)
 png(
-    file = paste(output_prefix, 'pcaexp.pca.png', sep = '.'),
+    file = 'pcaexp.pca.png',
     width = opt$plot_width,
     height = opt$plot_height,
     res = opt$plot_res,
@@ -157,13 +145,13 @@ dev.off()
 # Scree plot
 pcaobj_dds <- prcomp(t(assay(dds_rlog)))
 png(
-    file = paste(output_prefix, 'pcaexp.scree.png', sep = '.'),
+    file = 'pcaexp.scree.png',
     width = opt$plot_width,
     height = opt$plot_height,
     res = opt$plot_res,
     pointsize = opt$plot_point_size
 )
-pcascree(pcaobj_dds,type="pev", title=ifelse(is.null(opt$pca_title), paste('Scree Plot', output_prefix), opt$pca_title))
+pcascree(pcaobj_dds,type="pev", title=ifelse(is.null(opt$pca_title), 'Scree Plot', opt$pca_title))
 dev.off()
 
 # # Corr plot
@@ -183,7 +171,7 @@ dev.off()
 
 # Plot Loadings
 png(
-    file = paste(output_prefix, 'pcaexp.loadings.png', sep = '.'),
+    file = 'pcaexp.loadings.png',
     width = opt$plot_width,
     height = opt$plot_height,
     res = opt$plot_res,
@@ -194,7 +182,7 @@ dev.off()
 
 # Genes PCA
 png(
-    file = paste(output_prefix, 'pcaexp.genes_pca.png', sep = '.'),
+    file = 'pcaexp.genes_pca.png',
     width = opt$plot_width,
     height = opt$plot_height,
     res = opt$plot_res,
@@ -210,7 +198,7 @@ dev.off()
 
 # Corr plot
 png(
-    file = paste(output_prefix, 'pcaexp.corr.png', sep = '.'),
+    file = 'pcaexp.corr.png',
     width = opt$plot_width,
     height = opt$plot_height,
     res = opt$plot_res,
@@ -225,7 +213,7 @@ dev.off()
 ################################################
 ################################################
 
-sink(paste(output_prefix, "R_sessionInfo.log", sep = '.'))
+sink("R_sessionInfo.log")
 print(sessionInfo())
 sink()
 

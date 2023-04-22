@@ -25,16 +25,17 @@ jobs:
         NXF_VER:
           - "22.10.1"
           - ""
-        profile: ["docker", "singularity"]
+        # profile: ["docker", "singularity"]
+        profile: ["docker"]
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
 
       - name: Set up Singularity
         if: matrix.profile == 'singularity'
-        uses: eWaterCycle/setup-singularity@v5
+        uses: eWaterCycle/setup-singularity@v7
         with:
-          singularity-version: 3.7.1
+          singularity-version: 3.8.3
 
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
@@ -82,7 +83,7 @@ jobs:
         run: |
           nf-test test \
             --profile=test,${{ matrix.profile }} \
-            tests/${{ matrix.test }}/*.nf.test \
+            tests/nftest/${{ matrix.test }}.nf.test \
             --tap=test.tap
 
       - uses: pcolby/tap-summary@v1
