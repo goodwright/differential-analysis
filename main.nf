@@ -54,7 +54,7 @@ comparisons = params.comparisons ? params.comparisons.split(':').collect{ it.tri
 count_files = params.counts.split(',').collect{ file(it.trim(), checkIfExists: true) }.flatten()
 
 // Collect blocking variable
-ch_blocking_factors = params.blocking_factors ? params.blocking_factors.split('/').collect{ it.trim() } : null
+ch_blocking_factors = params.blocking_factors ? params.blocking_factors.split(',').collect{ it.trim() } : null
 
 // Parse blocking factors into a channel
 if (ch_blocking_factors) {
@@ -159,6 +159,7 @@ workflow DIFF_ANALYSIS {
         */
         ch_meta = SAMPLE_DIFF_SAMPLESHEET_CHECK.out.csv
             .splitCsv ( header:true, sep:"," )
+        //ch_meta | view
     }
     //EXAMPLE CHANNEL STRUCT: [sample_id:RAP1_IAA_30M_REP1, condition:B]
     //ch_meta | view
@@ -176,7 +177,7 @@ workflow DIFF_ANALYSIS {
 
         /*
         * CHANNEL: Create channel for all against all analysis
-        * but filter for only the conditions specified in on blocking factors
+        *          but filter for only the conditions specified
         */
         ch_comparison_set = ch_meta
             .map { it[params.contrast_column] }
@@ -196,12 +197,21 @@ workflow DIFF_ANALYSIS {
 
         ch_comparisons = ch_comparisons
                 .map { [it[0] + "_" + it[1], it[0], it[1], '' ]}
+        //ch_comparisons | view
 
+        /*
+        * CHANNEL: Join any set blocking factors with the target comparisons
+        */
         if (ch_blocking_factors) {
             ch_comparisons = ch_comparisons
-                .join (ch_blocking_factors)
-                .map { [it[0], params.contrast_column, it[1], it[2], it[4]]}
-
+                .join (ch_blocking_factors, remainder: true)
+                .map {
+                    def block = ''
+                    if(it[4]) {
+                        block = it[4]
+                    }
+                    [it[0], it[1], it[2], block ]
+                }
         }
         //ch_comparisons | view
 

@@ -61,6 +61,7 @@ jobs:
           - "comparison_single"
           - "comparison_multi"
           - "multi_count"
+          - "blocking_factor"
           - "gsea"
     steps:
       - name: Check out pipeline code
