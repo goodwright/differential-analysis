@@ -210,7 +210,7 @@ workflow DIFF_ANALYSIS {
                     if(it[4]) {
                         block = it[4]
                     }
-                    [it[0], it[1], it[2], block ] 
+                    [it[0], it[1], it[2], block ]
                 }
         }
         //ch_comparisons | view
