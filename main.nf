@@ -271,7 +271,7 @@ workflow DIFF_ANALYSIS {
         }
     }
 
-    if(params.run_gsea) {
+    if(params.run_gsea && params.organism) {
         /*
         * MODULE: Prep GSEA input channel with the filename as the meta id
         */
