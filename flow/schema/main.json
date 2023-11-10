@@ -3,6 +3,7 @@
         "input_data": {
             "name": "Input Data",
             "description": "Required input data",
+            "advanced": false,
             "properties": {
                 "samplesheet": {
                     "name": "Samplesheet",
@@ -24,38 +25,40 @@
             "name": "Pipeline Options",
             "description": "Pipeline run parameters",
             "advanced": false,
-            "contrast_column": {
-                "name": "Contrast column",
-                "description": "The column name in the count matrix to be used for contrast.",
-                "type": "string",
-                "required": false,
-                "default": "condition"
-            },
-            "blocking_factors": {
-                "name": "Blocking factors",
-                "description": "Column names to be used for block factors in the differential analysis model.",
-                "type": "string",
-                "required": false,
-                "default": ""
-            },
-            "comparisons": {
-                "name": "Comparisons",
-                "description": "Sets the comparisons to calculate. Defaults to all against all. To specify comparisons use the variables names to compare separated by an underscore to specify a single comparison and then list them using a colon separator. For example, C_A:B_C",
-                "type": "string",
-                "required": false,
-                "default": "all"
-            },
-            "organism": {
-                "name": "GSEA Organism",
-                "description": "Sets the genekit organism type for GSEA analysis. Consult this link to find the appropriate setting - https://genekitr.online/docs/species.html. Common settings include 'human' and 'Mouse'",
-                "type": "string",
-                "required": false
-            },
-            "count_sep": {
-                "name": "Count separator",
-                "description": "The text delimiter which separates columns in the input count matrix file.",
-                "type": "string",
-                "required": false
+            "properties": {
+                "contrast_column": {
+                    "name": "Contrast column",
+                    "description": "The column name in the count matrix to be used for contrast.",
+                    "type": "string",
+                    "required": false,
+                    "default": "condition"
+                },
+                "blocking_factors": {
+                    "name": "Blocking factors",
+                    "description": "Column names to be used for block factors in the differential analysis model.",
+                    "type": "string",
+                    "required": false,
+                    "default": ""
+                },
+                "comparisons": {
+                    "name": "Comparisons",
+                    "description": "Sets the comparisons to calculate. Defaults to all against all. To specify comparisons use the variables names to compare separated by an underscore to specify a single comparison and then list them using a colon separator. For example, C_A:B_C",
+                    "type": "string",
+                    "required": false,
+                    "default": "all"
+                },
+                "organism": {
+                    "name": "GSEA Organism",
+                    "description": "Sets the genekit organism type for GSEA analysis. Consult this link to find the appropriate setting - https://genekitr.online/docs/species.html. Common settings include 'human' and 'Mouse'",
+                    "type": "string",
+                    "required": false
+                },
+                "count_sep": {
+                    "name": "Count separator",
+                    "description": "The text delimiter which separates columns in the input count matrix file.",
+                    "type": "string",
+                    "required": false
+                }
             }
         }
     },
