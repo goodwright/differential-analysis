@@ -64,8 +64,8 @@
     "parameters": {
         "pipeline_options": {
             "count_sep": {
-                "name": "Count seperator",
-                "description": "The text delimiter which seperates columns in the input count matrix file.",
+                "name": "Count separator",
+                "description": "The text delimiter which separates columns in the input count matrix file.",
                 "params": [
                     {
                         "setting": "count_sep",
@@ -98,7 +98,7 @@
             },
             "comparisons": {
                 "name": "Comparisons",
-                "description": "Sets the comparisons to calculate. Defaults to all against all. To specify comparions use the variables names to compare seperated by an underscore to specify a single comparison and then list them using a colon seperator. For example, C_A:B_C",
+                "description": "Sets the comparisons to calculate. Defaults to all against all. To specify comparisons use the variables names to compare separated by an underscore to specify a single comparison and then list them using a colon separator. For example, C_A:B_C",
                 "params": [
                     {
                         "setting": "blocking_factors",
