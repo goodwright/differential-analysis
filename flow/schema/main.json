@@ -67,6 +67,183 @@
                     "required": false
                 }
             }
+        },
+        "deseq_parameters": {
+            "name": "Advanced DESeq2 Options",
+            "description": "Advanced DESeq2 parameters",
+            "advanced": true,
+            "properties": {
+                "dsq_test": {
+                    "name": "Test type",
+                    "description": "DESeq2 test type.",
+                    "type": "string",
+                    "required": true,
+                    "default": "Wald",
+                    "valid": ["Wald", "LRT"]
+                },
+                "dsq_fit_type": {
+                    "name": "Fit type",
+                    "description": "DESeq2 fit type.",
+                    "type": "string",
+                    "required": true,
+                    "default": "parametric",
+                    "valid": ["parametric", "local", "mean", "glmGamPoi"]
+                },
+                "dsq_min_replicates_for_replace": {
+                    "name": "Min replicates",
+                    "description": "The minimum number of replicates required in order to use replaceOutliers on a sample.",
+                    "type": "number",
+                    "required": false,
+                    "default": 7
+                },
+                "dsq_sf_type": {
+                    "name": "SF type",
+                    "description": "DESeq2 SF type.",
+                    "type": "string",
+                    "required": true,
+                    "default": "ratio",
+                    "valid": ["ratio", "poscounts", "iterate"]
+                },
+                "dsq_lfc_threshold": {
+                    "name": "Lfc Threshold",
+                    "description": "A non-negative value which specifies a log2 fold change threshold.",
+                    "type": "number",
+                    "required": false,
+                    "default": 0
+                },
+                "dsq_alt_hypothesis": {
+                    "name": "Alt hypothesis type",
+                    "description": "DESeq2 alt hypothesis type.",
+                    "type": "string",
+                    "required": true,
+                    "default": "greaterAbs",
+                    "valid": ["greaterAbs", "lessAbs", "greater", "less"]
+                },
+                "dsq_alpha": {
+                    "name": "Alpha",
+                    "description": "The significance cutoff used for optimizing the independent filtering.",
+                    "type": "number",
+                    "required": false,
+                    "default": 0.1
+                },
+                "dsq_minmu": {
+                    "name": "Min Mu",
+                    "description": "Lower bound on the estimated count (used when calculating contrasts).",
+                    "type": "number",
+                    "required": false,
+                    "default": 0.5
+                },
+                "dsq_lfcshrink_type": {
+                    "name": "Lfc shrink type",
+                    "description": "DESeq2 Lfc shrink type.",
+                    "type": "string",
+                    "required": true,
+                    "default": "ashr",
+                    "valid": ["ashr", "apeglm", "normal"]
+                }
+            }
+        },
+        "gsea_parameters": {
+            "name": "Advanced GSEA Options",
+            "description": "Advanced GSEA parameters",
+            "advanced": true,
+            "properties": {
+                "dsq_p_thresh": {
+                    "name": "DESeq2 p-value Threshold",
+                    "description": "p-value cut off for filtering input deseq2 results table.",
+                    "type": "number",
+                    "required": false,
+                    "default": 1
+                },
+                "gsea_p_cutoff": {
+                    "name": "GSEA p-value Threshold",
+                    "description": "Numeric of cutoff for both p-value and adjusted p-value.",
+                    "type": "number",
+                    "required": false,
+                    "default": 0.05
+                },
+                "gsea_q_cutoff": {
+                    "name": "GSEA q-value Threshold",
+                    "description": "Numeric of cutoff for q-value, default should be 0.15.",
+                    "type": "number",
+                    "required": false,
+                    "default": 0.15
+                },
+                "gsea_ontology": {
+                    "name": "GSEA Ontology type",
+                    "description": " Biological Processes (BP) | Molecular Functions (MF) | Cellular Components (CC)",
+                    "type": "string",
+                    "required": true,
+                    "default": "mf",
+                    "valid": ["mf", "bp", "cc"]
+                },
+                "gsea_min_gset_size": {
+                    "name": "GSEA min gene set size",
+                    "description": "Minimal size of each gene set for analysis.",
+                    "type": "number",
+                    "required": false,
+                    "default": 10
+                },
+                "gsea_max_gset_size": {
+                    "name": "GSEA max gene set size",
+                    "description": "Max size of each gene set for analysis.",
+                    "type": "number",
+                    "required": false,
+                    "default": 500
+                },
+                "gsea_p_adjust_method": {
+                    "name": "GSEA p-adjust method",
+                    "description": "p-value adjustment method",
+                    "type": "string",
+                    "required": true,
+                    "default": "BH",
+                    "valid": ["BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"]
+                },
+                "gsea_pathway_count": {
+                    "name": "GSEA pathway count",
+                    "description": "How many pathways to show on the plots.",
+                    "type": "number",
+                    "required": false,
+                    "default": 10
+                },
+                "gsea_stats_metric": {
+                    "name": "GSEA stats metric",
+                    "description": "Stats metric for the plots.",
+                    "type": "string",
+                    "required": true,
+                    "default": "p.adjust",
+                    "valid": ["p.adjust", "pvalue", "qvalue"]
+                },
+                "gsea_term_metric": {
+                    "name": "GSEA term metric",
+                    "description": "Stats metric for the plots.",
+                    "type": "string",
+                    "required": true,
+                    "default": "FoldEnrich",
+                    "valid": ["FoldEnrich", "GeneRatio", "Count", "RichFactor"]
+                },
+                "gsea_scale_ratio": {
+                    "name": "Plot scale ratio",
+                    "description": "Plot scale ratio.",
+                    "type": "number",
+                    "required": false,
+                    "default": 0.1
+                },
+                "gsea_main_text_size": {
+                    "name": "Plot text size",
+                    "description": "Plot text size.",
+                    "type": "number",
+                    "required": false,
+                    "default": 5
+                },
+                "gsea_legend_text_size": {
+                    "name": "Plot legend text size",
+                    "description": "Plot legend text size.",
+                    "type": "number",
+                    "required": false,
+                    "default": 8
+                }
+            }
         }
     },
     "outputs": [
