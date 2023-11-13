@@ -104,8 +104,8 @@
                     "default": 7
                 },
                 "dsq_sf_type": {
-                    "name": "SF type",
-                    "description": "DESeq2 SF type.",
+                    "name": "Size factor type",
+                    "description": "DESeq2 size factor estimation type.",
                     "type": "string",
                     "required": true,
                     "default": "ratio",
