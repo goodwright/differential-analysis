@@ -7,14 +7,14 @@
             "properties": {
                 "samplesheet": {
                     "name": "Samplesheet",
-                    "type": "csv file",
+                    "type": "file",
                     "pattern": "csv",
                     "required": true,
                     "description": "A list of sample ids with their condition indicator"
                 },
                 "counts": {
                     "name": "Counts",
-                    "type": "table",
+                    "type": "file",
                     "pattern": "csv|tsv",
                     "required": true,
                     "description": "A table file with whole number counts"
@@ -52,7 +52,14 @@
                     "description": "Sets the genekit organism type for GSEA analysis. Consult this link to find the appropriate setting - https://genekitr.online/docs/species.html. Common settings include 'human' and 'Mouse'",
                     "type": "string",
                     "required": false
-                },
+                }
+            }
+        },
+        "advanced_parameters": {
+            "name": "Advanced Pipeline Options",
+            "description": "Advanced Pipeline run parameters",
+            "advanced": true,
+            "properties": {
                 "count_sep": {
                     "name": "Count separator",
                     "description": "The text delimiter which separates columns in the input count matrix file.",
