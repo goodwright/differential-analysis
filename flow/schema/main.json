@@ -78,7 +78,7 @@
         },
         {
             "name": "DESeq2 results",
-            "description": "DESeq2 results",
+            "description": "Result data tables from DESeq2",
             "filetype": "tsv",
             "process": "R_DESEQ2"
         },
@@ -87,6 +87,12 @@
             "description": "DESeq2 standard plot outputs",
             "filetype": "png",
             "process": "R_DESEQ2_PLOTS"
+        },
+        {
+            "name": "Volcano plots",
+            "description": "Standard volcano plot output.",
+            "filetype": "png",
+            "process": "R_VOLCANO_PLOT"
         },
         {
             "name": "PCA Explorer plots",
