@@ -26,6 +26,13 @@
             "description": "Pipeline run parameters",
             "advanced": false,
             "properties": {
+                "study_name": {
+                    "name": "Study Name",
+                    "description": "The name of the study.",
+                    "type": "string",
+                    "required": false,
+                    "default": "study"
+                },
                 "contrast_column": {
                     "name": "Contrast column",
                     "description": "The column name in the count matrix to be used for contrast.",
