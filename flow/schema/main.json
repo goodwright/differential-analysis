@@ -77,21 +77,9 @@
             "process": "R_DESEQ2"
         },
         {
-            "name": "DESeq2 results table",
-            "description": "DESeq2 results table",
+            "name": "DESeq2 results",
+            "description": "DESeq2 results",
             "filetype": "tsv",
-            "process": "R_DESEQ2"
-        },
-        {
-            "name": "DESeq2 size factors",
-            "description": "DESeq2 size factors",
-            "filetype": "tsv",
-            "process": "R_DESEQ2"
-        },
-        {
-            "name": "DESeq2 normalised counts",
-            "description": "DESeq2 normalised counts",
-            "filetype": "*counts.tsv",
             "process": "R_DESEQ2"
         },
         {
