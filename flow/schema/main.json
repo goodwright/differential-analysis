@@ -91,7 +91,7 @@
         {
             "name": "DESeq2 normalised counts",
             "description": "DESeq2 normalised counts",
-            "filetype": "tsv",
+            "filetype": "*counts.tsv",
             "process": "R_DESEQ2"
         },
         {
