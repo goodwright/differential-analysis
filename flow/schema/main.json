@@ -105,6 +105,12 @@
             "description": "PCA Explorer output plots",
             "filetype": "png",
             "process": "R_PCAEXPLORER"
+        },
+        {
+            "name": "GSEA plots",
+            "description": "GSEA output plots",
+            "filetype": "png",
+            "process": "R_GSEA"
         }
     ]
 }
