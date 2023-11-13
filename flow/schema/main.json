@@ -101,6 +101,12 @@
             "process": "R_PCAEXPLORER"
         },
         {
+            "name": "GSEA data",
+            "description": "GSEA output data",
+            "filetype": "xlsx",
+            "process": "R_GSEA"
+        },
+        {
             "name": "GSEA plots",
             "description": "GSEA output plots",
             "filetype": "png",
