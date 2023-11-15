@@ -265,7 +265,9 @@ workflow DIFF_ANALYSIS {
                 params.contrast_column,
                 ch_comparisons.map { it[1] },
                 ch_comparisons.map { it[2] },
-                params.blocking_factors
+                params.blocking_factors,
+                params.volcano_foldchange,
+                params.volcano_pvalue
             )
             ch_versions = ch_versions.mix(R_VOLCANO_PLOT.out.versions)
         }

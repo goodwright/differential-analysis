@@ -10,9 +10,9 @@ process R_DESEQ2_PLOTS {
     tuple val(meta), path(rds)
 
     output:
-    tuple val(meta), path("*.png")                , emit: png
-    tuple val(meta), path("R_sessionInfo.log")  , emit: session_info
-    path "versions.yml"                           , emit: versions
+    tuple val(meta), path("*.pdf")             , emit: pdf
+    tuple val(meta), path("R_sessionInfo.log") , emit: session_info
+    path "versions.yml"                        , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

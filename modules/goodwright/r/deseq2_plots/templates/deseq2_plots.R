@@ -105,23 +105,15 @@ library(DESeq2)
 dds <- readRDS(opt$deseq_rds)
 
 # Dispersion plot
-png(
-    file = 'deseq2.dispersion.png',
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res,
-    pointsize = opt$plot_point_size
+pdf(
+    file = 'deseq2.dispersion.pdf'
 )
 plotDispEsts(dds)
 dev.off()
 
 # MA plot
-png(
-    file = 'deseq2.ma.png',
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res,
-    pointsize = opt$plot_point_size
+pdf(
+    file = 'deseq2.ma.pdf'
 )
 plotMA(dds)
 dev.off()

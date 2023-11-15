@@ -306,41 +306,29 @@ if(output_count == 0) {
     }
 
     # Volcano plot
-    png(
-        file = paste(opt$prefix, 'gsea.volcano.png', sep = '.'),
-        width = opt$plot_width,
-        height = opt$plot_height,
-        res = opt$plot_res
+    pdf(
+        file = paste(opt$prefix, 'gsea.volcano.pdf', sep = '.')
     )
     plotGSEA(gse, plot_type = "volcano", show_pathway = up_down_pathway_count, stats_metric = opt$stats_metric)
     dev.off()
 
     # Multi-pathway plot
-    png(
-        file = paste(opt$prefix, 'gsea.mpathway.png', sep = '.'),
-        width = opt$plot_width,
-        height = opt$plot_height,
-        res = opt$plot_res
+    pdf(
+        file = paste(opt$prefix, 'gsea.mpathway.pdf', sep = '.')
     )
     plotGSEA(gse, plot_type = "fgsea", show_pathway = up_down_pathway_count, stats_metric = opt$stats_metric)
     dev.off()
 
     # Ridge plot
-    png(
-        file = paste(opt$prefix, 'gsea.ridge.png', sep = '.'),
-        width = opt$plot_width,
-        height = opt$plot_height,
-        res = opt$plot_res
+    pdf(
+        file = paste(opt$prefix, 'gsea.ridge.pdf', sep = '.')
     )
     plotGSEA(gse, plot_type = "ridge", show_pathway = opt$pathway_count, stats_metric = opt$stats_metric)
     dev.off()
 
     # Bar plot
-    png(
-        file = paste(opt$prefix, 'gsea.bar.png', sep = '.'),
-        width = opt$plot_width,
-        height = opt$plot_height,
-        res = opt$plot_res
+    pdf(
+        file = paste(opt$prefix, 'gsea.bar.pdf', sep = '.')
     )
     plotGSEA(gse, plot_type = "bar", show_pathway = opt$pathway_count, stats_metric = opt$stats_metric, colour = c("red", "darkgreen"))
     dev.off()
@@ -361,21 +349,15 @@ if(output_count == 0) {
 }
 
 # Bar
-png(
-    file = paste(opt$prefix, 'ora.bar.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
+pdf(
+    file = paste(opt$prefix, 'ora.bar.pdf', sep = '.')
 )
 plotEnrich(ora_filt, plot_type = "bar", stats_metric = opt$stats_metric, term_metric = opt$term_metric)
 dev.off()
 
 # Bubble
-png(
-    file = paste(opt$prefix, 'ora.bubble.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
+pdf(
+    file = paste(opt$prefix, 'ora.bubble.pdf', sep = '.')
 )
 plotEnrich(
     ora_filt,
@@ -389,11 +371,8 @@ plotEnrich(
 dev.off()
 
 # Dot
-png(
-    file = paste(opt$prefix, 'ora.dot.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
+pdf(
+    file = paste(opt$prefix, 'ora.dot.pdf', sep = '.')
 )
 plotEnrich(
     ora_filt,
@@ -407,11 +386,8 @@ plotEnrich(
 dev.off()
 
 # Lollipop
-png(
-    file = paste(opt$prefix, 'ora.lollipop.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
+pdf(
+    file = paste(opt$prefix, 'ora.lollipop.pdf', sep = '.')
 )
 plotEnrich(
     ora_filt,
@@ -425,11 +401,8 @@ plotEnrich(
 dev.off()
 
 # Geneheat
-png(
-    file = paste(opt$prefix, 'ora.geneheat.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
+pdf(
+    file = paste(opt$prefix, 'ora.geneheat.pdf', sep = '.')
 )
 plotEnrich(
     ora_filt,
@@ -443,11 +416,8 @@ plotEnrich(
 dev.off()
 
 # Network
-png(
-    file = paste(opt$prefix, 'ora.network.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
+pdf(
+    file = paste(opt$prefix, 'ora.network.pdf', sep = '.')
 )
 plotEnrich(
     ora_filt,
@@ -461,11 +431,8 @@ plotEnrich(
 dev.off()
 
 # Gomap
-png(
-    file = paste(opt$prefix, 'ora.gomap.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
+pdf(
+    file = paste(opt$prefix, 'ora.gomap.pdf', sep = '.')
 )
 plotEnrich(
     ora_filt,
@@ -476,11 +443,8 @@ plotEnrich(
 dev.off()
 
 # Goheat
-png(
-    file = paste(opt$prefix, 'ora.goheat.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res
+pdf(
+    file = paste(opt$prefix, 'ora.goheat.pdf', sep = '.')
 )
 plotEnrich(
     ora_filt,

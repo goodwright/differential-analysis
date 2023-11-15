@@ -30,7 +30,6 @@ parse_args <- function(x){
 #'
 #' @return output Data frame
 read_delim_flexible <- function(file, header = TRUE, row.names = NULL){
-
     ext <- tolower(tail(strsplit(basename(file), split = "\\.")[[1]], 1))
 
     if (ext == "tsv" || ext == "txt") {
@@ -57,7 +56,7 @@ read_delim_flexible <- function(file, header = TRUE, row.names = NULL){
 
 # Set defaults and classes
 opt <- list(
-    results = "!{results}",
+    deseq_results = "!{deseq_results}",
     contrast_variable = "!{contrast_variable}",
     reference_level = "!{reference_level}",
     treatment_level = "!{treatment_level}",
@@ -66,8 +65,9 @@ opt <- list(
     plot_width = 1800,
     plot_height = 1200,
     plot_res = 300,
-	fold_change = 0.1,
-	p_value = 0.5
+
+    fold_change = !{fold_change},
+    p_value = !{p_value}
 )
 opt_types <- lapply(opt, class)
 
@@ -103,7 +103,7 @@ if (is.na(opt$blocking_variables) || opt$blocking_variables== '') {
 }
 
 # Check if required parameters have been provided
-required_opts <- c('results', 'contrast_variable', 'reference_level', 'treatment_level')
+required_opts <- c('deseq_results', 'contrast_variable', 'reference_level', 'treatment_level')
 missing <- required_opts[unlist(lapply(opt[required_opts], is.null)) | ! required_opts %in% names(opt)]
 
 if (length(missing) > 0){
@@ -111,7 +111,7 @@ if (length(missing) > 0){
 }
 
 # Check file inputs are valid
-for (file_input in c('results')){
+for (file_input in c('deseq_results')){
     if (is.null(opt[[file_input]])) {
         stop(paste("Please provide", file_input), call. = FALSE)
     }
@@ -144,12 +144,12 @@ prefix_part_names <- c('contrast_variable', 'reference_level', 'treatment_level'
 prefix_parts <- unlist(lapply(prefix_part_names, function(x) gsub("[^[:alnum:]]", "_", opt[[x]])))
 output_prefix <- paste(prefix_parts[prefix_parts != ''], collapse = '-')
 contrast.name <- paste(opt$treatment_level, opt$reference_level, sep = "_vs_")
-# Load RDS file
 
+# Load results table
 de <- read_delim_flexible(
-        file = opt$results,
-        header = TRUE
-    )
+    file = opt$deseq_results,
+    header = TRUE
+)
 
 # The significantly differentially expressed genes are the ones found in the upper-left and upper-right corners.
 # Add a column to the data frame to specify if they are UP- or DOWN- regulated (log2FoldChange respectively positive or negative)
@@ -165,13 +165,13 @@ de$diffexpressed[de$log2FoldChange <= -(opt$fold_change) & de$padj < opt$p_value
 
 # set colours vector
 if (n_up == 0 & n_down == 0){
-	cvec = c("#84A1AB")
+    cvec = c("#84A1AB")
 } else if (n_up == 0){
-	cvec = c("#B02302", "#84A1AB")
+    cvec = c("#B02302", "#84A1AB")
 } else if (n_down == 0){
-	cvec = c("#84A1AB", "#61B002")
+    cvec = c("#84A1AB", "#61B002")
 } else {
-	cvec = c("#B02302", "#84A1AB", "#61B002")
+    cvec = c("#B02302", "#84A1AB", "#61B002")
 }
 
 # label genes that are differentially expressed
@@ -182,17 +182,13 @@ de$delabel[de$diffexpressed != "NO"] <- de$gene_id[de$diffexpressed != "NO"]
 ggplot(data=de, aes(x=log2FoldChange, y=-log10(padj), label=delabel)) +
         geom_vline(xintercept=c(-(opt$fold_change), opt$fold_change), col="light grey", linetype="dashed") +
         geom_hline(yintercept=-log10(opt$p_value), col="light grey", linetype="dashed") +
-        geom_point(aes(color=diffexpressed), alpha=0.5) + 
+        geom_point(aes(color=diffexpressed), alpha=0.5) +
         geom_label_repel(size=3) +
         scale_color_manual(values=cvec) +
-		theme_bw()
+        theme_bw()
 
 ggsave(
-    file = paste(output_prefix, 'deseq2.volcano.png', sep = '.'),
-    width = opt$plot_width,
-    height = opt$plot_height,
-    dpi = opt$plot_res,
-    units = "px"
+    file = paste(output_prefix, 'deseq2.volcano.pdf', sep = '.')
 )
 
 

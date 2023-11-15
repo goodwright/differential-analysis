@@ -8,16 +8,18 @@ process R_VOLCANO_PLOT {
         'quay.io/biocontainers/bioconductor-degreport:1.34.0--r42hdfd78af_0' }"
 
     input:
-    tuple val(meta), path(results)
+    tuple val(meta), path(deseq_results)
     val contrast
     val reference
     val treatment
     val blocking
+    val fold_change
+    val p_value
 
     output:
-    tuple val(meta), path("*.png")                , emit: png
-    tuple val(meta), path("*.R_sessionInfo.log")  , emit: session_info
-    path "versions.yml"                           , emit: versions
+    tuple val(meta), path("*.pdf")               , emit: pdf
+    tuple val(meta), path("*.R_sessionInfo.log") , emit: session_info
+    path "versions.yml"                          , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

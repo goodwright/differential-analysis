@@ -59,6 +59,20 @@
                     "description": "Sets the genekit organism type for GSEA analysis. Consult this link to find the appropriate setting - https://genekitr.online/docs/species.html. Common settings include 'human' and 'Mouse'",
                     "type": "string",
                     "required": false
+                },
+                "volcano_foldchange": {
+                    "name": "Volcano plot fold change",
+                    "description": "The fold change threshold to highlight on the plot.",
+                    "type": "number",
+                    "required": false,
+                    "default": 2
+                },
+                "volcano_pvalue": {
+                    "name": "Volcano plot p-value",
+                    "description": "The p-value threshold to highlight on the plot.",
+                    "type": "number",
+                    "required": false,
+                    "default": 0.01
                 }
             }
         },
@@ -104,7 +118,7 @@
                     "default": 7
                 },
                 "dsq_sf_type": {
-                    "name": "Size factor type",
+                    "name": "Size factor estimation type",
                     "description": "DESeq2 size factor estimation type.",
                     "type": "string",
                     "required": true,
@@ -275,13 +289,13 @@
         {
             "name": "Volcano plots",
             "description": "Standard volcano plot output.",
-            "filetype": "png",
+            "filetype": "pdf",
             "process": "R_VOLCANO_PLOT"
         },
         {
             "name": "PCA Explorer plots",
             "description": "PCA Explorer output plots",
-            "filetype": "png",
+            "filetype": "pdf",
             "process": "R_PCAEXPLORER"
         },
         {
@@ -293,7 +307,7 @@
         {
             "name": "GSEA plots",
             "description": "GSEA output plots",
-            "filetype": "png",
+            "filetype": "pdf",
             "process": "R_GSEA"
         }
     ]
