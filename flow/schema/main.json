@@ -283,7 +283,7 @@
         {
             "name": "DESeq2 plots",
             "description": "DESeq2 standard plot outputs",
-            "filetype": "png",
+            "filetype": "pdf",
             "process": "R_DESEQ2_PLOTS"
         },
         {
