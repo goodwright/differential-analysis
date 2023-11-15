@@ -289,7 +289,7 @@
         {
             "name": "Volcano plots",
             "description": "Standard volcano plot output.",
-            "filetype": "pdf",
+            "filetype": "volcano.pdf",
             "process": "R_VOLCANO_PLOT"
         },
         {
