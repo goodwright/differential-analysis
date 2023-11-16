@@ -132,24 +132,16 @@ if (!is.null(opt$blocking_variables)) {
 
 # PCA Plot
 pca_title <- ifelse(is.null(opt$pca_title), 'PCA Plot', opt$pca_title)
-png(
-    file = 'pcaexp.pca.png',
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res,
-    pointsize = opt$plot_point_size
+pdf(
+    file = 'pcaexp.pca.pdf'
 )
 pcaplot(dds_rlog,intgroup = intgroup.vars,ntop = opt$pca_num_genes, pcX = 1, pcY = 2, title = pca_title, ellipse = TRUE)
 dev.off()
 
 # Scree plot
 pcaobj_dds <- prcomp(t(assay(dds_rlog)))
-png(
-    file = 'pcaexp.scree.png',
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res,
-    pointsize = opt$plot_point_size
+pdf(
+    file = 'pcaexp.scree.pdf'
 )
 pcascree(pcaobj_dds,type="pev", title=ifelse(is.null(opt$pca_title), 'Scree Plot', opt$pca_title))
 dev.off()
@@ -170,23 +162,15 @@ dev.off()
 # hi_loadings(pcaobj_airway,topN = 10,exprTable=counts(dds_airway))
 
 # Plot Loadings
-png(
-    file = 'pcaexp.loadings.png',
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res,
-    pointsize = opt$plot_point_size
+pdf(
+    file = 'pcaexp.loadings.pdf'
 )
 hi_loadings(pcaobj_dds,topN = opt$loading_top_genes)
 dev.off()
 
 # Genes PCA
-png(
-    file = 'pcaexp.genes_pca.png',
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res,
-    pointsize = opt$plot_point_size
+pdf(
+    file = 'pcaexp.genes_pca.pdf'
 )
 genespca(dds_rlog,
         ntop=opt$gene_pca_num_genes,
@@ -197,12 +181,8 @@ genespca(dds_rlog,
 dev.off()
 
 # Corr plot
-png(
-    file = 'pcaexp.corr.png',
-    width = opt$plot_width,
-    height = opt$plot_height,
-    res = opt$plot_res,
-    pointsize = opt$plot_point_size
+pdf(
+    file = 'pcaexp.corr.pdf'
 )
 pair_corr(counts(dds)[1:100,])
 dev.off()
