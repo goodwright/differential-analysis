@@ -169,9 +169,9 @@ def check_samplesheet(process_name, samplesheet, counts, count_sep, output, is_m
                     print_error("Factor contains spaces!", "Line", line)
 
             # Check for dots
-            if sample:
-                if sample.find(".") != -1:
-                    print_error("Sample ID contains dots!", "Line", line)
+            # if sample:
+            #     if sample.find(".") != -1:
+            #         print_error("Sample ID contains dots!", "Line", line)
             if condition:
                 if condition.find(".") != -1:
                     print_error("Condition contains dots!", "Line", line)
