@@ -32,8 +32,6 @@ parse_args <- function(x){
 opt <- list(
     deseq_rds = "!{rds}",
     contrast_variable = "!{contrast_variable}",
-    reference_level = "!{reference_level}",
-    treatment_level = "!{treatment_level}",
     blocking_variables = "!{blocking_variables}",
 
     pca_title = NULL,
@@ -133,6 +131,11 @@ dds_rlog <- rlogTransformation(dds)
 #     blocking.vars = unlist(strsplit(opt$blocking_variables, split = ';'))
 #     intgroup.vars <- c(intgroup, blocking.vars)
 # }
+
+# prefix_part_names <- c('contrast_variable', 'reference_level', 'treatment_level', 'blocking_variables')
+# prefix_parts <- unlist(lapply(prefix_part_names, function(x) gsub("[^[:alnum:]]", "_", opt[[x]])))
+# output_prefix <- paste(prefix_parts[prefix_parts != ''], collapse = '-')
+output_prefix = ''
 
 # PCA Plot
 pca_title <- ifelse(is.null(opt$pca_title), 'PCA Plot', opt$pca_title)
