@@ -251,7 +251,11 @@ workflow DIFF_ANALYSIS {
             * MODULE: Run pcaexplorer
             */
             R_PCAEXPLORER (
-                ch_dsq2_rdata
+                ch_dsq2_rdata,
+                params.contrast_column,
+                ch_comparisons.map { it[1] },
+                ch_comparisons.map { it[2] },
+                params.blocking_factors
             )
             ch_versions = ch_versions.mix(R_PCAEXPLORER.out.versions)
         }

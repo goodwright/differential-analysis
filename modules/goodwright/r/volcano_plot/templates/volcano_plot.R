@@ -176,7 +176,12 @@ if (n_up == 0 & n_down == 0){
 
 # label genes that are differentially expressed
 de$delabel <- NA
-de$delabel[de$diffexpressed != "NO"] <- de$gene_id[de$diffexpressed != "NO"]
+# de$delabel[de$diffexpressed != "NO"] <- de$gene_id[de$diffexpressed != "NO"]
+if ("gene_name" %in% names(de)) {
+    de$delabel[de$diffexpressed != "NO"] <- de$gene_name[de$diffexpressed != "NO"]
+} else {
+    de$delabel[de$diffexpressed != "NO"] <- de$gene_id[de$diffexpressed != "NO"]
+}
 
 # Volcano plot
 ggplot(data=de, aes(x=log2FoldChange, y=-log10(padj), label=delabel)) +
