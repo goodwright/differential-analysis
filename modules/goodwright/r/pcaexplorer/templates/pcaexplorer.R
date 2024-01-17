@@ -31,6 +31,10 @@ parse_args <- function(x){
 # Set defaults and classes
 opt <- list(
     deseq_rds = "!{rds}",
+    contrast_variable = "!{contrast_variable}",
+    reference_level = "!{reference_level}",
+    treatment_level = "!{treatment_level}",
+    blocking_variables = "!{blocking_variables}",
 
     pca_title = NULL,
     pca_num_genes = 1000,
@@ -124,18 +128,18 @@ dds <- readRDS(opt$deseq_rds)
 dds_rlog <- rlogTransformation(dds)
 
 # Create intgroup
-intgroup.vars <- c(opt$contrast_variable)
-if (!is.null(opt$blocking_variables)) {
-    blocking.vars = unlist(strsplit(opt$blocking_variables, split = ';'))
-    intgroup.vars <- c(intgroup, blocking.vars)
-}
+# intgroup.vars <- c(opt$contrast_variable)
+# if (!is.null(opt$blocking_variables)) {
+#     blocking.vars = unlist(strsplit(opt$blocking_variables, split = ';'))
+#     intgroup.vars <- c(intgroup, blocking.vars)
+# }
 
 # PCA Plot
 pca_title <- ifelse(is.null(opt$pca_title), 'PCA Plot', opt$pca_title)
 pdf(
     file = 'pcaexp.pca.pdf'
 )
-pcaplot(dds_rlog,intgroup = intgroup.vars,ntop = opt$pca_num_genes, pcX = 1, pcY = 2, title = pca_title, ellipse = TRUE)
+pcaplot(dds_rlog, intgroup = c(opt$contrast_variable), ntop = opt$pca_num_genes, pcX = 1, pcY = 2, title = pca_title, ellipse = TRUE)
 dev.off()
 
 # Scree plot

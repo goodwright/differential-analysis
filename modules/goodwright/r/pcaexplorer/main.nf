@@ -6,6 +6,10 @@ process R_PCAEXPLORER {
 
     input:
     tuple val(meta), path(rds)
+    val contrast
+    val reference
+    val treatment
+    val blocking
 
     output:
     tuple val(meta), path("*.pdf")             , emit: pdf
@@ -16,6 +20,10 @@ process R_PCAEXPLORER {
     task.ext.when == null || task.ext.when
 
     shell:
+    contrast_variable = contrast ?: "condition"
+    reference_level = reference ?: "NO_REF"
+    treatment_level = treatment ?: "NO_TREAT"
+    blocking_variables = blocking ?: ""
     template 'pcaexplorer.R'
 
 }
