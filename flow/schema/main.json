@@ -6,11 +6,21 @@
             "advanced": false,
             "properties": {
                 "samplesheet": {
-                    "name": "Samplesheet",
-                    "type": "file",
-                    "pattern": "csv",
+                    "name": "Samples",
+                    "type": "sample",
+                    "pattern": "csv|xlsx",
                     "required": true,
-                    "description": "A list of sample ids with their condition indicator"
+                    "description": "A list of sample IDs with their condition indicator. The sample IDs here must match those used in the corresponding counts file.",
+                    "csv": {
+                        "sample_id": {
+                            "property": "name",
+                            "user_override": true
+                        },
+                        "condition": {
+                            "property": "",
+                            "user_override": true
+                        }
+                    }
                 },
                 "counts": {
                     "name": "Counts",
