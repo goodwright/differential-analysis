@@ -10,7 +10,8 @@
                     "type": "sample",
                     "pattern": "csv|xlsx",
                     "required": true,
-                    "description": "A list of sample IDs with their condition indicator. The sample IDs here must match those used in the corresponding counts file.",
+                    "description": "A list of sample IDs with their condition indicator. The sample IDs here must match those used in the corresponding counts file. You can provide additional columns if you wish.",
+                    "allow_custom_columns": true,
                     "csv": {
                         "sample_id": {
                             "property": "name",
@@ -27,7 +28,7 @@
                     "type": "file",
                     "pattern": "csv|tsv",
                     "required": true,
-                    "description": "A table file with whole number counts"
+                    "description": "A table file with whole number counts."
                 }
             }
         },
