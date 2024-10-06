@@ -1,42 +1,59 @@
 {
-    "inputs": {
-        "input_data": {
+    "inputs": [
+        {
             "name": "Input Data",
             "description": "Required input data",
             "advanced": false,
-            "properties": {
+            "modes": ["Flow Samples", "Provide File"],
+            "params": {
                 "samplesheet": {
                     "name": "Samples",
-                    "type": "sample",
-                    "pattern": "csv|xlsx",
-                    "required": true,
                     "description": "A list of sample IDs with their condition indicator. The sample IDs here must match those used in the corresponding counts file. You can provide additional columns if you wish.",
+                    "required": true,
+                    "modes": ["Flow Samples"],
+                    "type": "csv",
+                    "takes_samples": true,
                     "allow_custom_columns": true,
-                    "csv": {
-                        "sample_id": {
-                            "property": "name",
-                            "user_override": true
+                    "columns": [
+                        {
+                            "name": "sample_id",
+                            "type": "string",
+                            "from_sample": "name",
+                            "required": true,
+                            "render": true
                         },
-                        "condition": {
-                            "property": "",
-                            "user_override": true
+                        {
+                            "name": "condition",
+                            "type": "string",
+                            "required": true,
+                            "render": true
                         }
-                    }
+                    ]
+                },
+                "samplesheet_": {
+                    "key": "samplesheet",
+                    "name": "Samples",
+                    "description": "A list of sample IDs with their condition indicator. The sample IDs here must match those used in the corresponding counts file. You can provide additional columns if you wish.",
+                    "required": true,
+                    "modes": ["Provide File"],
+                    "type": "data",
+                    "pattern": "csv|xlsx"
                 },
                 "counts": {
                     "name": "Counts",
-                    "type": "file",
+                    "type": "data",
+                    "modes": ["Flow Samples", "Provide File"],
                     "pattern": "csv|tsv",
                     "required": true,
                     "description": "A table file with whole number counts."
                 }
             }
         },
-        "parameters": {
+        {
             "name": "Pipeline Options",
             "description": "Pipeline run parameters",
             "advanced": false,
-            "properties": {
+            "params": {
                 "study_name": {
                     "name": "Study Name",
                     "description": "The name of the study.",
@@ -89,11 +106,11 @@
                 }
             }
         },
-        "advanced_parameters": {
+        {
             "name": "Advanced Pipeline Options",
             "description": "Advanced Pipeline run parameters",
             "advanced": true,
-            "properties": {
+            "params": {
                 "count_sep": {
                     "name": "Count separator",
                     "description": "The text delimiter which separates columns in the input count matrix file.",
@@ -102,11 +119,11 @@
                 }
             }
         },
-        "deseq_parameters": {
+        {
             "name": "Advanced DESeq2 Options",
             "description": "Advanced DESeq2 parameters",
             "advanced": true,
-            "properties": {
+            "params": {
                 "dsq_test": {
                     "name": "Test type",
                     "description": "DESeq2 test type.",
@@ -177,11 +194,11 @@
                 }
             }
         },
-        "gsea_parameters": {
+        {
             "name": "Advanced GSEA Options",
             "description": "Advanced GSEA parameters",
             "advanced": true,
-            "properties": {
+            "params": {
                 "dsq_p_thresh": {
                     "name": "DESeq2 p-value Threshold",
                     "description": "p-value cut off for filtering input deseq2 results table.",
@@ -279,7 +296,7 @@
                 }
             }
         }
-    },
+    ],
     "outputs": [
         {
             "name": "DESeq2 rds data file",
