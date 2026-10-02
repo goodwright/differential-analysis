@@ -131,3 +131,7 @@ To raise any issues or comments with the pipeline you can (in order of preferenc
 ## Paired models and module tests
 
 An optional `analysis_mode=design_contrasts` runs explicit DESeq2 designs and numeric interaction contrasts. An optional `module_test=camera` runs a separate limma-voom CAMERA test of fixed modules. See [advanced-model documentation](docs/advanced-model.md) for inputs, assumptions, output audit and Flow registration requirements. The default remains the existing pairwise DESeq2 workflow.
+
+### GSEA output checks
+
+The pairwise GSEA module publishes enrichment tables and ORA bar, bubble, dot, lollipop, network, GO-map and GO-heatmap PDFs. The gene heatmap was disabled in commit `85940e6` and is not a promised output. The regression test checks supported plots for complete PDF documents with at least one page; it does not require the discontinued file. This does not change enrichment calculations or thresholds.

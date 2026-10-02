@@ -15,14 +15,17 @@ nextflow_pipeline {
             assert new File("$outputDir/test_study/gsea/condition-A-B/condition-A-B.genekitr_gsea_result.xlsx").exists()
             assert new File("$outputDir/test_study/gsea/condition-A-B/condition-A-B.genekitr_ora_result.xlsx").exists()
 
-            assert new File("$outputDir/test_study/gsea/condition-A-B/condition-A-B.ora.bar.pdf").exists()
-            assert new File("$outputDir/test_study/gsea/condition-A-B/condition-A-B.ora.bubble.pdf").exists()
-            assert new File("$outputDir/test_study/gsea/condition-A-B/condition-A-B.ora.dot.pdf").exists()
-            assert new File("$outputDir/test_study/gsea/condition-A-B/condition-A-B.ora.geneheat.pdf").exists()
-            assert new File("$outputDir/test_study/gsea/condition-A-B/condition-A-B.ora.goheat.pdf").exists()
-            assert new File("$outputDir/test_study/gsea/condition-A-B/condition-A-B.ora.gomap.pdf").exists()
-            assert new File("$outputDir/test_study/gsea/condition-A-B/condition-A-B.ora.lollipop.pdf").exists()
-            assert new File("$outputDir/test_study/gsea/condition-A-B/condition-A-B.ora.network.pdf").exists()
+            // Geneheat was disabled in 85940e6; it is not a supported output.
+            // Validate complete, nonempty PDF documents for every supported ORA plot.
+            ["bar", "bubble", "dot", "goheat", "gomap", "lollipop", "network"].each { plot ->
+                def file = new File("$outputDir/test_study/gsea/condition-A-B/condition-A-B.ora.${plot}.pdf")
+                assert file.exists()
+                assert file.length() > 1000
+                def pdf = file.getText("ISO-8859-1")
+                assert pdf.startsWith("%PDF-")
+                assert pdf.contains("%%EOF")
+                assert (pdf =~ /\/Type\s*\/Page\b/).find()
+            }
         }
     }
 }
