@@ -2,7 +2,7 @@ process R_DESIGN_DESEQ2 {
     tag 'design_contrasts'
     label 'process_medium'
 
-    // Release operators supply a built, immutable image digest. Local tests use their pinned R environment.
+    // The pipeline default pins a tested image digest; local tests can use installed R.
     container params.custom_model_container
 
     input:
@@ -33,7 +33,7 @@ process R_CAMERA_MODULE {
     tag 'design_contrasts'
     label 'process_medium'
 
-    // Release operators supply a built, immutable image digest. Local tests use their pinned R environment.
+    // The pipeline default pins a tested image digest; local tests can use installed R.
     container params.custom_model_container
 
     input:
