@@ -1,278 +1,306 @@
 {
-    "inputs": {
-        "input_data": {
+    "inputs": [
+        {
             "name": "Input Data",
-            "description": "Required input data",
-            "advanced": false,
-            "properties": {
-                "samplesheet": {
-                    "name": "Samplesheet",
-                    "type": "file",
-                    "pattern": "csv",
-                    "required": true,
-                    "description": "A list of sample ids with their condition indicator"
-                },
+            "modes": ["Flow Samples", "Provide File"],
+            "params": {
                 "counts": {
                     "name": "Counts",
-                    "type": "file",
+                    "type": "data",
+                    "modes": ["Flow Samples", "Provide File"],
                     "pattern": "csv|tsv",
                     "required": true,
-                    "description": "A table file with whole number counts"
+                    "description": "A table file with whole number counts."
+                },
+                "samplesheet": {
+                    "name": "Samples",
+                    "type": "csv",
+                    "modes": ["Flow Samples"],
+                    "columns": [
+                        {
+                            "name": "sample_id",
+                            "type": "string",
+                            "render": true,
+                            "required": true,
+                            "from_sample": "name"
+                        },
+                        {
+                            "name": "condition",
+                            "type": "string",
+                            "render": true,
+                            "required": true
+                        }
+                    ],
+                    "required": true,
+                    "description": "A list of sample IDs with their condition indicator. The sample IDs here must match those used in the corresponding counts file. You can provide additional columns if you wish.",
+                    "takes_samples": true,
+                    "allow_custom_columns": true
+                },
+                "samplesheet_": {
+                    "key": "samplesheet",
+                    "name": "Samples",
+                    "type": "data",
+                    "modes": ["Provide File"],
+                    "pattern": "csv|xlsx",
+                    "required": true,
+                    "description": "A list of sample IDs with their condition indicator. The sample IDs here must match those used in the corresponding counts file. You can provide additional columns if you wish."
                 }
-            }
-        },
-        "parameters": {
-            "name": "Pipeline Options",
-            "description": "Pipeline run parameters",
+            },
             "advanced": false,
-            "properties": {
+            "description": "Required input data"
+        },
+        {
+            "name": "Pipeline Options",
+            "params": {
+                "organism": {
+                    "name": "GSEA Organism",
+                    "type": "string",
+                    "valid": ["Human", "Mouse", "Chicken", "Fly", "Zebrafish", "Rat", "Yeast", "Ecoli-K12", ""],
+                    "default": "",
+                    "required": false,
+                    "description": "Sets the genekit organism type for GSEA analysis."
+                },
                 "study_name": {
                     "name": "Study Name",
-                    "description": "The name of the study.",
                     "type": "string",
+                    "default": "study",
                     "required": false,
-                    "default": "study"
-                },
-                "contrast_column": {
-                    "name": "Contrast column",
-                    "description": "The column name in the count matrix to be used for contrast.",
-                    "type": "string",
-                    "required": false,
-                    "default": "condition"
-                },
-                "blocking_factors": {
-                    "name": "Blocking factors",
-                    "description": "Column names to be used for block factors in the differential analysis model.",
-                    "type": "string",
-                    "required": false,
-                    "default": ""
+                    "description": "The name of the study."
                 },
                 "comparisons": {
                     "name": "Comparisons",
-                    "description": "Sets the comparisons to calculate. Defaults to all against all. To specify comparisons use the variables names to compare separated by an underscore to specify a single comparison and then list them using a colon separator. For example, C_A:B_C",
                     "type": "string",
+                    "default": "all",
                     "required": false,
-                    "default": "all"
-                },
-                "organism": {
-                    "name": "GSEA Organism",
-                    "description": "Sets the genekit organism type for GSEA analysis.",
-                    "type": "string",
-                    "required": false,
-                    "default": "",
-                    "valid": ["Human", "Mouse", "Chicken", "Fly", "Zebrafish", "Rat", "Yeast", "Ecoli-K12", ""]
-                },
-                "volcano_foldchange": {
-                    "name": "Volcano plot fold change",
-                    "description": "The fold change threshold to highlight on the plot.",
-                    "type": "number",
-                    "required": false,
-                    "default": 2
+                    "description": "Sets the comparisons to calculate. Defaults to all against all. To specify comparisons use the variables names to compare separated by an underscore to specify a single comparison and then list them using a colon separator. For example, C_A:B_C"
                 },
                 "volcano_pvalue": {
                     "name": "Volcano plot p-value",
-                    "description": "The p-value threshold to highlight on the plot.",
                     "type": "number",
+                    "default": 0.01,
                     "required": false,
-                    "default": 0.01
+                    "description": "The p-value threshold to highlight on the plot."
+                },
+                "contrast_column": {
+                    "name": "Contrast column",
+                    "type": "string",
+                    "default": "condition",
+                    "required": false,
+                    "description": "The column name in the count matrix to be used for contrast."
+                },
+                "blocking_factors": {
+                    "name": "Blocking factors",
+                    "type": "string",
+                    "default": "",
+                    "required": false,
+                    "description": "Column names to be used for block factors in the differential analysis model."
+                },
+                "volcano_foldchange": {
+                    "name": "Volcano plot fold change",
+                    "type": "number",
+                    "default": 2,
+                    "required": false,
+                    "description": "The fold change threshold to highlight on the plot."
                 }
-            }
+            },
+            "advanced": false,
+            "description": "Pipeline run parameters"
         },
-        "advanced_parameters": {
+        {
             "name": "Advanced Pipeline Options",
-            "description": "Advanced Pipeline run parameters",
-            "advanced": true,
-            "properties": {
+            "params": {
                 "count_sep": {
                     "name": "Count separator",
-                    "description": "The text delimiter which separates columns in the input count matrix file.",
                     "type": "string",
-                    "required": false
+                    "required": false,
+                    "description": "The text delimiter which separates columns in the input count matrix file."
                 }
-            }
-        },
-        "deseq_parameters": {
-            "name": "Advanced DESeq2 Options",
-            "description": "Advanced DESeq2 parameters",
+            },
             "advanced": true,
-            "properties": {
+            "description": "Advanced Pipeline run parameters"
+        },
+        {
+            "name": "Advanced DESeq2 Options",
+            "params": {
                 "dsq_test": {
                     "name": "Test type",
-                    "description": "DESeq2 test type.",
                     "type": "string",
-                    "required": true,
+                    "valid": ["Wald", "LRT"],
                     "default": "Wald",
-                    "valid": ["Wald", "LRT"]
-                },
-                "dsq_fit_type": {
-                    "name": "Fit type",
-                    "description": "DESeq2 fit type.",
-                    "type": "string",
                     "required": true,
-                    "default": "parametric",
-                    "valid": ["parametric", "local", "mean", "glmGamPoi"]
-                },
-                "dsq_min_replicates_for_replace": {
-                    "name": "Min replicates",
-                    "description": "The minimum number of replicates required in order to use replaceOutliers on a sample.",
-                    "type": "number",
-                    "required": false,
-                    "default": 7
-                },
-                "dsq_sf_type": {
-                    "name": "Size factor estimation type",
-                    "description": "DESeq2 size factor estimation type.",
-                    "type": "string",
-                    "required": true,
-                    "default": "ratio",
-                    "valid": ["ratio", "poscounts", "iterate"]
-                },
-                "dsq_lfc_threshold": {
-                    "name": "Lfc Threshold",
-                    "description": "A non-negative value which specifies a log2 fold change threshold.",
-                    "type": "number",
-                    "required": false,
-                    "default": 0
-                },
-                "dsq_alt_hypothesis": {
-                    "name": "Alt hypothesis type",
-                    "description": "DESeq2 alt hypothesis type.",
-                    "type": "string",
-                    "required": true,
-                    "default": "greaterAbs",
-                    "valid": ["greaterAbs", "lessAbs", "greater", "less"]
+                    "description": "DESeq2 test type."
                 },
                 "dsq_alpha": {
                     "name": "Alpha",
-                    "description": "The significance cutoff used for optimizing the independent filtering.",
                     "type": "number",
+                    "default": 0.1,
                     "required": false,
-                    "default": 0.1
+                    "description": "The significance cutoff used for optimizing the independent filtering."
                 },
                 "dsq_minmu": {
                     "name": "Min Mu",
-                    "description": "Lower bound on the estimated count (used when calculating contrasts).",
                     "type": "number",
+                    "default": 0.5,
                     "required": false,
-                    "default": 0.5
+                    "description": "Lower bound on the estimated count (used when calculating contrasts)."
+                },
+                "dsq_sf_type": {
+                    "name": "Size factor estimation type",
+                    "type": "string",
+                    "valid": ["ratio", "poscounts", "iterate"],
+                    "default": "ratio",
+                    "required": true,
+                    "description": "DESeq2 size factor estimation type."
+                },
+                "dsq_fit_type": {
+                    "name": "Fit type",
+                    "type": "string",
+                    "valid": ["parametric", "local", "mean", "glmGamPoi"],
+                    "default": "parametric",
+                    "required": true,
+                    "description": "DESeq2 fit type."
+                },
+                "dsq_lfc_threshold": {
+                    "name": "Lfc Threshold",
+                    "type": "number",
+                    "default": 0,
+                    "required": false,
+                    "description": "A non-negative value which specifies a log2 fold change threshold."
+                },
+                "dsq_alt_hypothesis": {
+                    "name": "Alt hypothesis type",
+                    "type": "string",
+                    "valid": ["greaterAbs", "lessAbs", "greater", "less"],
+                    "default": "greaterAbs",
+                    "required": true,
+                    "description": "DESeq2 alt hypothesis type."
                 },
                 "dsq_lfcshrink_type": {
                     "name": "Lfc shrink type",
-                    "description": "DESeq2 Lfc shrink type.",
                     "type": "string",
-                    "required": true,
+                    "valid": ["ashr", "apeglm", "normal"],
                     "default": "ashr",
-                    "valid": ["ashr", "apeglm", "normal"]
+                    "required": true,
+                    "description": "DESeq2 Lfc shrink type."
+                },
+                "dsq_min_replicates_for_replace": {
+                    "name": "Min replicates",
+                    "type": "number",
+                    "default": 7,
+                    "required": false,
+                    "description": "The minimum number of replicates required in order to use replaceOutliers on a sample."
                 }
-            }
-        },
-        "gsea_parameters": {
-            "name": "Advanced GSEA Options",
-            "description": "Advanced GSEA parameters",
+            },
             "advanced": true,
-            "properties": {
+            "description": "Advanced DESeq2 parameters"
+        },
+        {
+            "name": "Advanced GSEA Options",
+            "params": {
                 "dsq_p_thresh": {
                     "name": "DESeq2 p-value Threshold",
-                    "description": "p-value cut off for filtering input deseq2 results table.",
                     "type": "number",
+                    "default": 1,
                     "required": false,
-                    "default": 1
-                },
-                "gsea_p_cutoff": {
-                    "name": "GSEA p-value Threshold",
-                    "description": "Numeric of cutoff for both p-value and adjusted p-value.",
-                    "type": "number",
-                    "required": false,
-                    "default": 0.05
-                },
-                "gsea_q_cutoff": {
-                    "name": "GSEA q-value Threshold",
-                    "description": "Numeric of cutoff for q-value, default should be 0.15.",
-                    "type": "number",
-                    "required": false,
-                    "default": 0.15
+                    "description": "p-value cut off for filtering input deseq2 results table."
                 },
                 "gsea_ontology": {
                     "name": "GSEA Ontology type",
-                    "description": " Biological Processes (BP) | Molecular Functions (MF) | Cellular Components (CC)",
                     "type": "string",
-                    "required": true,
+                    "valid": ["mf", "bp", "cc"],
                     "default": "mf",
-                    "valid": ["mf", "bp", "cc"]
-                },
-                "gsea_min_gset_size": {
-                    "name": "GSEA min gene set size",
-                    "description": "Minimal size of each gene set for analysis.",
-                    "type": "number",
-                    "required": false,
-                    "default": 10
-                },
-                "gsea_max_gset_size": {
-                    "name": "GSEA max gene set size",
-                    "description": "Max size of each gene set for analysis.",
-                    "type": "number",
-                    "required": false,
-                    "default": 500
-                },
-                "gsea_p_adjust_method": {
-                    "name": "GSEA p-adjust method",
-                    "description": "p-value adjustment method",
-                    "type": "string",
                     "required": true,
-                    "default": "BH",
-                    "valid": ["BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"]
+                    "description": " Biological Processes (BP) | Molecular Functions (MF) | Cellular Components (CC)"
                 },
-                "gsea_pathway_count": {
-                    "name": "GSEA pathway count",
-                    "description": "How many pathways to show on the plots.",
+                "gsea_p_cutoff": {
+                    "name": "GSEA p-value Threshold",
                     "type": "number",
+                    "default": 0.05,
                     "required": false,
-                    "default": 10
+                    "description": "Numeric of cutoff for both p-value and adjusted p-value."
                 },
-                "gsea_stats_metric": {
-                    "name": "GSEA stats metric",
-                    "description": "Stats metric for the plots.",
-                    "type": "string",
-                    "required": true,
-                    "default": "p.adjust",
-                    "valid": ["p.adjust", "pvalue", "qvalue"]
-                },
-                "gsea_term_metric": {
-                    "name": "GSEA term metric",
-                    "description": "Stats metric for the plots.",
-                    "type": "string",
-                    "required": true,
-                    "default": "FoldEnrich",
-                    "valid": ["FoldEnrich", "GeneRatio", "Count", "RichFactor"]
+                "gsea_q_cutoff": {
+                    "name": "GSEA q-value Threshold",
+                    "type": "number",
+                    "default": 0.15,
+                    "required": false,
+                    "description": "Numeric of cutoff for q-value, default should be 0.15."
                 },
                 "gsea_scale_ratio": {
                     "name": "Plot scale ratio",
-                    "description": "Plot scale ratio.",
                     "type": "number",
+                    "default": 0.1,
                     "required": false,
-                    "default": 0.1
+                    "description": "Plot scale ratio."
+                },
+                "gsea_term_metric": {
+                    "name": "GSEA term metric",
+                    "type": "string",
+                    "valid": ["FoldEnrich", "GeneRatio", "Count", "RichFactor"],
+                    "default": "FoldEnrich",
+                    "required": true,
+                    "description": "Stats metric for the plots."
+                },
+                "gsea_stats_metric": {
+                    "name": "GSEA stats metric",
+                    "type": "string",
+                    "valid": ["p.adjust", "pvalue", "qvalue"],
+                    "default": "p.adjust",
+                    "required": true,
+                    "description": "Stats metric for the plots."
+                },
+                "gsea_max_gset_size": {
+                    "name": "GSEA max gene set size",
+                    "type": "number",
+                    "default": 500,
+                    "required": false,
+                    "description": "Max size of each gene set for analysis."
+                },
+                "gsea_min_gset_size": {
+                    "name": "GSEA min gene set size",
+                    "type": "number",
+                    "default": 10,
+                    "required": false,
+                    "description": "Minimal size of each gene set for analysis."
+                },
+                "gsea_pathway_count": {
+                    "name": "GSEA pathway count",
+                    "type": "number",
+                    "default": 10,
+                    "required": false,
+                    "description": "How many pathways to show on the plots."
                 },
                 "gsea_main_text_size": {
                     "name": "Plot text size",
-                    "description": "Plot text size.",
                     "type": "number",
+                    "default": 5,
                     "required": false,
-                    "default": 5
+                    "description": "Plot text size."
+                },
+                "gsea_p_adjust_method": {
+                    "name": "GSEA p-adjust method",
+                    "type": "string",
+                    "valid": ["BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"],
+                    "default": "BH",
+                    "required": true,
+                    "description": "p-value adjustment method"
                 },
                 "gsea_legend_text_size": {
                     "name": "Plot legend text size",
-                    "description": "Plot legend text size.",
                     "type": "number",
+                    "default": 8,
                     "required": false,
-                    "default": 8
+                    "description": "Plot legend text size."
                 }
-            }
+            },
+            "advanced": true,
+            "description": "Advanced GSEA parameters"
         },
-        "advanced_model": {
+        {
             "name": "DESeq2 designs and separate module tests",
             "advanced": true,
-            "description": "Optional advanced mode; the default pairwise workflow is unchanged.",
-            "properties": {
+            "description": "Explicit DESeq2 designs and contrasts, with a separate optional CAMERA module test.",
+            "params": {
                 "analysis_mode": {
                     "name": "Analysis mode",
                     "type": "string",
@@ -290,7 +318,7 @@
                 },
                 "contrast_table": {
                     "name": "Contrast weights",
-                    "type": "file",
+                    "type": "data",
                     "pattern": "csv|tsv",
                     "description": "Required in advanced mode: contrast, coefficient, weight columns. Exact design-matrix coefficient names; no R expressions.",
                     "required": false
@@ -304,14 +332,14 @@
                 },
                 "gene_sets": {
                     "name": "Fixed gene modules",
-                    "type": "file",
+                    "type": "data",
                     "pattern": "gmt",
                     "description": "Fixed GMT modules, required with module_test=camera; no modules are chosen from observed differential results.",
                     "required": false
                 },
                 "gene_universe": {
                     "name": "Competitive gene universe",
-                    "type": "file",
+                    "type": "data",
                     "pattern": "txt",
                     "description": "Optional prespecified module-plus-background gene IDs for CAMERA only. Does not restrict DESeq2 gene tests or normalization.",
                     "required": false
@@ -416,49 +444,49 @@
                 }
             }
         }
-    },
+    ],
     "outputs": [
         {
             "name": "DESeq2 rds data file",
-            "description": "R rds data object containing processed DESeq2 data.",
+            "process": "R_DESEQ2",
             "filetype": "rds",
-            "process": "R_DESEQ2"
+            "description": "R rds data object containing processed DESeq2 data."
         },
         {
             "name": "DESeq2 results",
-            "description": "Result data tables from DESeq2",
+            "process": "R_DESEQ2",
             "filetype": "tsv",
-            "process": "R_DESEQ2"
+            "description": "Result data tables from DESeq2"
         },
         {
             "name": "DESeq2 plots",
-            "description": "DESeq2 standard plot outputs",
+            "process": "R_DESEQ2_PLOTS",
             "filetype": "pdf",
-            "process": "R_DESEQ2_PLOTS"
+            "description": "DESeq2 standard plot outputs"
         },
         {
             "name": "Volcano plots",
-            "description": "Standard volcano plot output.",
+            "process": "R_VOLCANO_PLOT",
             "filetype": "pdf",
-            "process": "R_VOLCANO_PLOT"
+            "description": "Standard volcano plot output."
         },
         {
             "name": "PCA Explorer plots",
-            "description": "PCA Explorer output plots",
+            "process": "R_PCAEXPLORER",
             "filetype": "pdf",
-            "process": "R_PCAEXPLORER"
+            "description": "PCA Explorer output plots"
         },
         {
             "name": "GSEA data",
-            "description": "GSEA output data",
+            "process": "R_GSEA",
             "filetype": "xlsx",
-            "process": "R_GSEA"
+            "description": "GSEA output data"
         },
         {
             "name": "GSEA plots",
-            "description": "GSEA output plots",
+            "process": "R_GSEA",
             "filetype": "pdf",
-            "process": "R_GSEA"
+            "description": "GSEA output plots"
         },
         {
             "name": "DESeq2 design audit",

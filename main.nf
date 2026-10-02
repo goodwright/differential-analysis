@@ -44,6 +44,21 @@ for (param in check_param_list) {
     }
 }
 
+if (!(params.analysis_mode in ['pairwise', 'design_contrasts'])) {
+    error "analysis_mode must be pairwise or design_contrasts"
+}
+if (params.analysis_mode == 'design_contrasts') {
+    if (params.enable_conda) error 'Advanced mode does not support Conda: use a tested container or the documented installed R dependencies'
+    if (!params.design_formula || !params.contrast_table) error 'Advanced mode requires design_formula and contrast_table'
+    if (params.comparisons != 'all' || params.blocking_factors) error 'Advanced mode uses design_formula and contrast_table; do not also set comparisons/blocking_factors'
+    if (params.min_samples < 1 || params.min_cpm < 0 || params.min_set_size < 2 || params.max_set_size < params.min_set_size) error 'Invalid expression/gene-set thresholds'
+    if (!(params.set_adjust_method in ['BH', 'holm', 'bonferroni'])) error 'set_adjust_method must be BH, holm or bonferroni'
+    if (!(params.module_test in ['none', 'camera'])) error 'module_test must be none or camera'
+    if ((params.module_test == 'camera') != (params.gene_sets ? true : false)) error 'Explicit module_test=camera and gene_sets must be supplied together'
+    if (params.gene_universe && !params.gene_sets) error 'gene_universe requires gene_sets'
+    if ((workflow.containerEngine in ['docker', 'singularity', 'podman']) && !params.custom_model_container) error 'Advanced container execution requires custom_model_container, pinned to a built image digest'
+}
+
 // Stage dummy file to be used as an optional input where required
 ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
 
@@ -52,6 +67,8 @@ comparisons = params.comparisons ? params.comparisons.split(':').collect{ it.tri
 
 // Split count file input into list
 count_files = params.counts.split(',').collect{ file(it.trim(), checkIfExists: true) }.flatten()
+
+if (params.analysis_mode == 'design_contrasts' && count_files.size() != 1) error 'Advanced mode requires a single merged count matrix'
 
 // Collect blocking variable
 ch_blocking_factors = params.blocking_factors ? params.blocking_factors.split(',').collect{ it.trim() } : null
@@ -98,6 +115,7 @@ if (ch_blocking_factors) {
 //
 
 include { SAMPLE_DIFF_SAMPLESHEET_CHECK } from './modules/goodwright/sample/diff_samplesheet_check/main'
+include { R_DESIGN_DESEQ2; R_CAMERA_MODULE } from './modules/goodwright/r/custom_model/main'
 include { R_DESEQ2                      } from './modules/goodwright/r/deseq2/main'
 include { R_DESEQ2_PLOTS                } from './modules/goodwright/r/deseq2_plots/main'
 include { R_PCAEXPLORER                 } from './modules/goodwright/r/pcaexplorer/main'
@@ -165,8 +183,44 @@ workflow DIFF_ANALYSIS {
     //ch_meta | view
     //SAMPLE_DIFF_SAMPLESHEET_CHECK.out.csv | view
 
+    if (params.run_diff_analysis && params.analysis_mode == 'design_contrasts') {
+        def settings = [
+            design_formula: params.design_formula, numeric_covariates: params.numeric_covariates,
+            deseq_fit_type: params.design_deseq_fit_type, deseq_sf_type: params.design_deseq_sf_type,
+            count_matrix_type: params.count_matrix_type, gene_set_id_column: params.gene_set_id_column,
+            filter_column: params.filter_column, filter_level: params.filter_level,
+            min_cpm: params.min_cpm, min_samples: params.min_samples,
+            min_set_size: params.min_set_size, max_set_size: params.max_set_size,
+            set_adjust_method: params.set_adjust_method, seed: params.model_seed,
+            use_gene_sets: params.gene_sets ? true : false, use_universe: params.gene_universe ? true : false
+        ]
+        def encoded = groovy.json.JsonOutput.toJson(settings).getBytes('UTF-8').encodeBase64().toString()
+        R_DESIGN_DESEQ2 (
+            ch_counts,
+            SAMPLE_DIFF_SAMPLESHEET_CHECK.out.csv,
+            file(params.contrast_table, checkIfExists: true),
+            params.gene_sets ? file(params.gene_sets, checkIfExists: true) : ch_dummy_file,
+            params.gene_universe ? file(params.gene_universe, checkIfExists: true) : ch_dummy_file,
+            encoded,
+            file("$projectDir/lib/advanced_model", checkIfExists: true)
+        )
+        ch_versions = ch_versions.mix(R_DESIGN_DESEQ2.out.versions)
+        if (params.module_test == 'camera') {
+            R_CAMERA_MODULE (
+                ch_counts,
+                SAMPLE_DIFF_SAMPLESHEET_CHECK.out.csv,
+                file(params.contrast_table, checkIfExists: true),
+                file(params.gene_sets, checkIfExists: true),
+                params.gene_universe ? file(params.gene_universe, checkIfExists: true) : ch_dummy_file,
+                encoded,
+                file("$projectDir/lib/advanced_model", checkIfExists: true)
+            )
+            ch_versions = ch_versions.mix(R_CAMERA_MODULE.out.versions)
+        }
+    }
+
     ch_dsq_results = Channel.empty()
-    if(params.run_diff_analysis) {
+    if(params.run_diff_analysis && params.analysis_mode == 'pairwise') {
         /*
         * CHANNEL: Create channel from samplesheet
         */

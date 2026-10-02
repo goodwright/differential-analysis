@@ -399,22 +399,6 @@ plotEnrich(
 )
 dev.off()
 
-# Geneheat
-# pdf(
-#     file = paste(opt$prefix, 'ora.geneheat.pdf', sep = '.')
-# )
-# plotEnrich(
-#     ora_filt,
-#     plot_type = "geneheat",
-#     stats_metric = opt$stats_metric,
-#     term_metric = opt$term_metric,
-#     scale_ratio = opt$scale_ratio,
-#     main_text_size = opt$main_text_size,
-#     legend_text_size = opt$legend_text_size
-# )
-# dev.off()
-
-
 # Network
 pdf(
     file = paste(opt$prefix, 'ora.network.pdf', sep = '.')

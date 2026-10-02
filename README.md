@@ -105,10 +105,10 @@ This pipeline exposes most key DESeq2 parameters via nextflow parameters with th
 The most important parameter for this module is correct setting of `--organism`, this informs genekitr which organism to pull data for and must be set by finding the correct species name [here](https://genekitr.online/docs/species.html). If no organism is suitable or users wish to switch this module off then the `--skip_gsea` parameter can be used. genekitr parameters are exposed via nextflow parameters with the `gsea_` prefix. More information on these parameters can be found in the table below, or in the genekitr documentation.
 
 | Parameter             | Default    | Description                                                                       |
-| --------------------- | ---------- | --------------------------------------------------------------------------------- | ------------------------ | ------------------------ |
+| --------------------- | ---------- | --------------------------------------------------------------------------------- |
 | gsea_p_cutoff         | 0.05       | A numeric of cutoff for both pvalue and adjusted pvalue                           |
 | gsea_q_cutoff         | 0.05       | A numeric of cutoff for both qvalue                                               |
-| gsea_ontology         | mf         | Biological Processes (BP)                                                         | Molecular Functions (MF) | Cellular Components (CC) |
+| gsea_ontology         | mf         | Biological Processes (BP), Molecular Functions (MF), Cellular Components (CC)     |
 | gsea_min_gset_size    | 10         | Minimal size of each gene set for analysis                                        |
 | gsea_max_gset_size    | 500        | Max size of each gene set for analysis                                            |
 | gsea_p_adjust_method  | BH         | Choose from “holm”, “hochberg”, “hommel”, “bonferroni”, “BH”, “BY”, “fdr”, “none” |
@@ -127,3 +127,15 @@ To raise any issues or comments with the pipeline you can (in order of preferenc
 - Raise an issue in this repository
 - Write to us in our [Slack](https://join.slack.com/t/imapsgroup/shared_invite/zt-r24y3591-Xbhnym2t38u_urU~I0K0lQ)
 - Email charlotte.capitanchik@goodwright.com
+
+## Paired models and module tests
+
+An optional `analysis_mode=design_contrasts` runs explicit DESeq2 designs and numeric interaction contrasts. An optional `module_test=camera` runs a separate limma-voom CAMERA test of fixed modules. See [advanced-model documentation](docs/advanced-model.md) for inputs, assumptions, output audit and Flow registration requirements. The default remains the existing pairwise DESeq2 workflow.
+
+### GSEA output checks
+
+The pairwise GSEA module publishes enrichment tables and ORA bar, bubble, dot, lollipop, network, GO-map and GO-heatmap PDFs. The gene heatmap was disabled in commit `85940e6` and is not a promised output. The regression test checks supported plots for complete PDF documents with at least one page; it does not require the discontinued file. This does not change enrichment calculations or thresholds.
+
+### Nextflow compatibility
+
+CI exercises Nextflow 22.10.1 and the current stable release with Java 17. This pipeline retains Groovy-based DSL2/config syntax. Nextflow 26.04 and later default to the strict parser, so run this pipeline with `NXF_SYNTAX_PARSER=v1`, as set explicitly in CI. A strict-syntax migration is not included in this release. See the [Nextflow 26.04 migration guide](https://docs.seqera.io/nextflow/migrations/26-04).
