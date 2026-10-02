@@ -2,6 +2,8 @@ name: Advanced model tests
 on:
   pull_request:
   workflow_dispatch:
+env:
+  NXF_SYNTAX_PARSER: v1
 jobs:
   synthetic-model:
     runs-on: ubuntu-latest
@@ -30,6 +32,7 @@ jobs:
         with:
           version: "24.10.8"
           java-version: "17"
+          java-distribution: "temurin"
           all: "true"
       - name: End-to-end advanced workflow
         run: |

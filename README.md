@@ -135,3 +135,7 @@ An optional `analysis_mode=design_contrasts` runs explicit DESeq2 designs and nu
 ### GSEA output checks
 
 The pairwise GSEA module publishes enrichment tables and ORA bar, bubble, dot, lollipop, network, GO-map and GO-heatmap PDFs. The gene heatmap was disabled in commit `85940e6` and is not a promised output. The regression test checks supported plots for complete PDF documents with at least one page; it does not require the discontinued file. This does not change enrichment calculations or thresholds.
+
+### Nextflow compatibility
+
+CI exercises Nextflow 22.10.1 and the current stable release with Java 17. This pipeline retains Groovy-based DSL2/config syntax. Nextflow 26.04 and later default to the strict parser, so run this pipeline with `NXF_SYNTAX_PARSER=v1`, as set explicitly in CI. A strict-syntax migration is not included in this release. See the [Nextflow 26.04 migration guide](https://docs.seqera.io/nextflow/migrations/26-04).

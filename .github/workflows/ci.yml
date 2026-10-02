@@ -9,6 +9,8 @@ on:
 
 env:
   NXF_ANSI_LOG: false
+  # This pipeline retains Groovy-based DSL2/config syntax.
+  NXF_SYNTAX_PARSER: v1
 
 # Cancel if a newer run is started
 concurrency:
@@ -43,6 +45,7 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
           java-version: "17"
+          java-distribution: "temurin"
           all: "true"
 
       - name: Run pipeline with test data
@@ -76,6 +79,7 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
           java-version: "17"
+          java-distribution: "temurin"
           all: "true"
 
       - name: Install nf-test
