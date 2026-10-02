@@ -105,10 +105,10 @@ This pipeline exposes most key DESeq2 parameters via nextflow parameters with th
 The most important parameter for this module is correct setting of `--organism`, this informs genekitr which organism to pull data for and must be set by finding the correct species name [here](https://genekitr.online/docs/species.html). If no organism is suitable or users wish to switch this module off then the `--skip_gsea` parameter can be used. genekitr parameters are exposed via nextflow parameters with the `gsea_` prefix. More information on these parameters can be found in the table below, or in the genekitr documentation.
 
 | Parameter             | Default    | Description                                                                       |
-| --------------------- | ---------- | --------------------------------------------------------------------------------- | ------------------------ | ------------------------ |
+| --------------------- | ---------- | --------------------------------------------------------------------------------- |
 | gsea_p_cutoff         | 0.05       | A numeric of cutoff for both pvalue and adjusted pvalue                           |
 | gsea_q_cutoff         | 0.05       | A numeric of cutoff for both qvalue                                               |
-| gsea_ontology         | mf         | Biological Processes (BP)                                                         | Molecular Functions (MF) | Cellular Components (CC) |
+| gsea_ontology         | mf         | Biological Processes (BP), Molecular Functions (MF), Cellular Components (CC)     |
 | gsea_min_gset_size    | 10         | Minimal size of each gene set for analysis                                        |
 | gsea_max_gset_size    | 500        | Max size of each gene set for analysis                                            |
 | gsea_p_adjust_method  | BH         | Choose from “holm”, “hochberg”, “hommel”, “bonferroni”, “BH”, “BY”, “fdr”, “none” |
