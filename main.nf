@@ -48,6 +48,7 @@ if (!(params.analysis_mode in ['pairwise', 'design_contrasts'])) {
     error "analysis_mode must be pairwise or design_contrasts"
 }
 if (params.analysis_mode == 'design_contrasts') {
+    if (params.enable_conda) error 'Advanced mode does not support Conda: use a tested container or the documented installed R dependencies'
     if (!params.design_formula || !params.contrast_table) error 'Advanced mode requires design_formula and contrast_table'
     if (params.comparisons != 'all' || params.blocking_factors) error 'Advanced mode uses design_formula and contrast_table; do not also set comparisons/blocking_factors'
     if (params.min_samples < 1 || params.min_cpm < 0 || params.min_set_size < 2 || params.max_set_size < params.min_set_size) error 'Invalid expression/gene-set thresholds'

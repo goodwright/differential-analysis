@@ -4,7 +4,6 @@ process R_CUSTOM_MODEL {
 
     // Release operators supply a built, immutable image digest. Local tests use their pinned R environment.
     container params.custom_model_container
-    conda (params.enable_conda ? "${projectDir}/lib/advanced_model/environment.yml" : null)
 
     input:
     path counts, stageAs: 'counts.input'
