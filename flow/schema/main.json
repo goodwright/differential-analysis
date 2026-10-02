@@ -417,8 +417,9 @@
                 "custom_model_container": {
                     "name": "Advanced model container",
                     "type": "string",
-                    "description": "Built container pinned by digest; required for container execution. Register only after building and testing the image.",
-                    "required": false
+                    "description": "Tested Linux amd64 DESeq2/CAMERA runtime, pinned by digest. Overrides must identify a compatible immutable image; ensure the execution environment can pull it.",
+                    "required": false,
+                    "default": "ghcr.io/goodwright/differential-analysis/advanced-model@sha256:e272a5038cc3a80acf1cefc826658fbb6b48efc60ee1f7729affeda583d8db14"
                 },
                 "module_test": {
                     "name": "Module test",

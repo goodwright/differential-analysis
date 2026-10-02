@@ -1,6 +1,5 @@
 """Catch Flow registration regressions without requiring private Flow access."""
 import json
-import re
 import unittest
 from pathlib import Path
 
@@ -35,14 +34,11 @@ class FlowSchemaContract(unittest.TestCase):
             self.assertTrue({"json", "tsv", "rds"}.issubset(types))
 
     def test_container_default_matches_pipeline(self):
-        # Once the first tested candidate is published, both defaults are pinned together.
-        default = self.params["custom_model_container"].get("default")
+        default = self.params["custom_model_container"]["default"]
         config = (ROOT / "nextflow.config").read_text()
-        if default is None:
-            self.assertRegex(config, r"custom_model_container\s*=\s*null")
-        else:
-            self.assertRegex(default, r"^ghcr.io/goodwright/[^@]+@sha256:[0-9a-f]{64}$")
-            self.assertIn("custom_model_container = '" + default + "'", config)
+        self.assertRegex(default, r"^ghcr.io/goodwright/[^@]+@sha256:[0-9a-f]{64}$")
+        self.assertIn("custom_model_container = '" + default + "'", config)
+
 
 
 if __name__ == "__main__":
