@@ -1,0 +1,88 @@
+name: Advanced runtime container
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  NXF_SYNTAX_PARSER: v1
+  NXF_ANSI_LOG: false
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Test and label exactly the PR head, rather than a moving merge ref.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Validate canonical Flow schema
+        run: python3 tests/flow_schema/test_schema.py
+      - name: Identify candidate
+        id: candidate
+        run: |
+          source_sha=$(git rev-parse HEAD)
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/advanced-model:candidate-$source_sha" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - name: Build pinned runtime
+        uses: docker/build-push-action@v6
+        with:
+          context: lib/advanced_model
+          file: lib/advanced_model/Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: ${{ steps.candidate.outputs.image }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.event.pull_request.head.sha || github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Test statistics inside the image and export runtime provenance
+        env:
+          CANDIDATE_IMAGE: ${{ steps.candidate.outputs.image }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/advanced-fixture" "$RUNNER_TEMP/runtime-evidence"
+          docker run --rm --user "$(id -u):$(id -g)" \
+            -v "$PWD:$PWD:ro" -v "$RUNNER_TEMP:$RUNNER_TEMP" -w "$PWD" \
+            "$CANDIDATE_IMAGE" Rscript tests/advanced_model/test_advanced.R "$PWD" "$RUNNER_TEMP/advanced-fixture"
+          docker run --rm "$CANDIDATE_IMAGE" cat /opt/advanced-model/installed-packages.tsv > "$RUNNER_TEMP/runtime-evidence/installed-packages.tsv"
+          docker run --rm "$CANDIDATE_IMAGE" cat /opt/advanced-model/sessionInfo.txt > "$RUNNER_TEMP/runtime-evidence/sessionInfo.txt"
+          docker image inspect "$CANDIDATE_IMAGE" > "$RUNNER_TEMP/runtime-evidence/local-image.json"
+      - uses: nf-core/setup-nextflow@6c2e22b4d901f0c42ca66c5069f8026df026d165 # v2.1.4
+        with:
+          version: "24.10.8"
+          java-version: "17"
+          java-distribution: "temurin"
+          all: "true"
+      - name: Test both Nextflow paths with Docker
+        env:
+          CANDIDATE_IMAGE: ${{ steps.candidate.outputs.image }}
+        run: bash tests/advanced_model/container_smoke.sh "$CANDIDATE_IMAGE" "$RUNNER_TEMP/advanced-fixture" "$RUNNER_TEMP/advanced-output"
+      - name: Log in to GHCR for same-repository candidates
+        if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish tested image and record immutable reference
+        if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          CANDIDATE_IMAGE: ${{ steps.candidate.outputs.image }}
+        run: |
+          docker push "$CANDIDATE_IMAGE"
+          docker image inspect "$CANDIDATE_IMAGE" --format '{{index .RepoDigests 0}}' > "$RUNNER_TEMP/runtime-evidence/image-reference.txt"
+          cat "$RUNNER_TEMP/runtime-evidence/image-reference.txt" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: advanced-container-evidence
+          path: |
+            ${{ runner.temp }}/runtime-evidence/
+            ${{ runner.temp }}/advanced-fixture/test-summary.json
+            ${{ runner.temp }}/advanced-output/**/model_audit.json
+            ${{ runner.temp }}/advanced-output/**/software_versions.yml
+            .nextflow.log
