@@ -267,6 +267,132 @@
                     "default": 8
                 }
             }
+        },
+        "advanced_model": {
+            "name": "Paired models and module tests",
+            "advanced": true,
+            "description": "Optional advanced mode; the default pairwise workflow is unchanged.",
+            "properties": {
+                "analysis_mode": {
+                    "name": "Analysis mode",
+                    "type": "string",
+                    "valid": ["pairwise", "design_contrasts"],
+                    "default": "pairwise",
+                    "description": "Pairwise DESeq2 or an explicit limma-voom model with contrasts and optional CAMERA module testing.",
+                    "required": false
+                },
+                "design_formula": {
+                    "name": "Design formula",
+                    "type": "string",
+                    "default": "",
+                    "description": "Advanced mode: one-sided formula using samplesheet columns, e.g. ~ 0 + pair + poly + poly:ko1 + poly:ko9. Rank-deficient models are rejected.",
+                    "required": false
+                },
+                "contrast_table": {
+                    "name": "Contrast weights",
+                    "type": "file",
+                    "pattern": "csv|tsv",
+                    "description": "Required in advanced mode: contrast, coefficient, weight columns. Exact design-matrix coefficient names; no R expressions.",
+                    "required": false
+                },
+                "numeric_covariates": {
+                    "name": "Numeric covariates",
+                    "type": "string",
+                    "default": "",
+                    "description": "Comma-separated numeric model columns; other model columns are categorical. Example: poly,ko1,ko9.",
+                    "required": false
+                },
+                "gene_sets": {
+                    "name": "Fixed gene modules",
+                    "type": "file",
+                    "pattern": "gmt",
+                    "description": "Optional fixed GMT gene sets. CAMERA estimates within-set correlation.",
+                    "required": false
+                },
+                "gene_universe": {
+                    "name": "Competitive gene universe",
+                    "type": "file",
+                    "pattern": "txt",
+                    "description": "Optional one gene ID per line: all module members plus prespecified background. No automatic matching or outcome-based background selection.",
+                    "required": false
+                },
+                "gene_set_id_column": {
+                    "name": "Gene-set identifier",
+                    "type": "string",
+                    "valid": ["gene_id", "gene_name"],
+                    "default": "gene_id",
+                    "description": "Count-table column matching GMT/universe IDs. IDs must be unique; ambiguous mappings fail.",
+                    "required": false
+                },
+                "count_matrix_type": {
+                    "name": "Count matrix type",
+                    "type": "string",
+                    "valid": ["raw_counts", "length_scaled_counts"],
+                    "default": "raw_counts",
+                    "description": "Raw integer counts or explicitly prepared tximport lengthScaledTPM counts; never TPM or log expression.",
+                    "required": false
+                },
+                "filter_column": {
+                    "name": "Expression filter column",
+                    "type": "string",
+                    "default": "",
+                    "description": "Optional sample column restricting expression eligibility, e.g. fraction. Empty uses all samples.",
+                    "required": false
+                },
+                "filter_level": {
+                    "name": "Expression filter level",
+                    "type": "string",
+                    "default": "",
+                    "description": "Value used for expression eligibility, e.g. input.",
+                    "required": false
+                },
+                "min_cpm": {
+                    "name": "Minimum CPM",
+                    "type": "number",
+                    "default": 1,
+                    "description": "Expression threshold before fitting.",
+                    "required": false
+                },
+                "min_samples": {
+                    "name": "Minimum expressed samples",
+                    "type": "number",
+                    "default": 2,
+                    "description": "Number of filter-eligible samples meeting minimum CPM.",
+                    "required": false
+                },
+                "min_set_size": {
+                    "name": "Minimum retained module size",
+                    "type": "number",
+                    "default": 10,
+                    "required": false
+                },
+                "max_set_size": {
+                    "name": "Maximum retained module size",
+                    "type": "number",
+                    "default": 500,
+                    "required": false
+                },
+                "set_adjust_method": {
+                    "name": "Module multiple-test correction",
+                    "type": "string",
+                    "valid": ["BH", "holm", "bonferroni"],
+                    "default": "BH",
+                    "description": "Across all tested module-by-contrast combinations in this execution. Raw p-values also retained.",
+                    "required": false
+                },
+                "model_seed": {
+                    "name": "Model random seed",
+                    "type": "number",
+                    "default": 20261002,
+                    "required": false
+                },
+                "custom_model_container": {
+                    "name": "Advanced model container",
+                    "type": "string",
+                    "description": "Built container pinned by digest; required for container execution. Register only after building and testing the image.",
+                    "required": false
+                }
+            }
         }
     },
     "outputs": [

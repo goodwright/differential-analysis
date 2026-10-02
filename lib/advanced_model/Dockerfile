@@ -1,0 +1,3 @@
+# Build and publish this image under an immutable digest before registering a Flow release.
+FROM bioconductor/bioconductor_docker:RELEASE_3_19
+RUN Rscript -e 'install.packages(c("jsonlite", "statmod", "locfit", "Rcpp"), repos="https://cloud.r-project.org"); install.packages("https://bioconductor.org/packages/3.19/bioc/src/contrib/limma_3.60.6.tar.gz", repos=NULL, type="source"); install.packages("https://bioconductor.org/packages/3.19/bioc/src/contrib/edgeR_4.2.2.tar.gz", repos=NULL, type="source"); stopifnot(as.character(packageVersion("limma")) == "3.60.6", as.character(packageVersion("edgeR")) == "4.2.2")'

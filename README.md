@@ -127,3 +127,7 @@ To raise any issues or comments with the pipeline you can (in order of preferenc
 - Raise an issue in this repository
 - Write to us in our [Slack](https://join.slack.com/t/imapsgroup/shared_invite/zt-r24y3591-Xbhnym2t38u_urU~I0K0lQ)
 - Email charlotte.capitanchik@goodwright.com
+
+## Paired models and module tests
+
+An optional `analysis_mode=design_contrasts` runs explicit limma-voom contrasts and CAMERA module tests. See [advanced-model documentation](docs/advanced-model.md) for inputs, assumptions, output audit and Flow registration requirements. The default remains the existing pairwise DESeq2 workflow.
