@@ -21,6 +21,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Validate canonical Flow schema
         run: python3 tests/flow_schema/test_schema.py
+      - name: Verify the default runtime can be pulled anonymously
+        run: |
+          default_image=$(python3 -c 'import json; s=json.load(open("flow/schema/main.json")); print(next(x["params"]["custom_model_container"]["default"] for x in s["inputs"] if "custom_model_container" in x["params"]))')
+          mkdir -p "$RUNNER_TEMP/anonymous-docker"
+          docker --config "$RUNNER_TEMP/anonymous-docker" pull "$default_image"
       - name: Identify candidate
         id: candidate
         run: |

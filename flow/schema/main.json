@@ -419,7 +419,7 @@
                     "type": "string",
                     "description": "Tested Linux amd64 DESeq2/CAMERA runtime, pinned by digest. Overrides must identify a compatible immutable image; ensure the execution environment can pull it.",
                     "required": false,
-                    "default": "ghcr.io/goodwright/differential-analysis/advanced-model@sha256:e272a5038cc3a80acf1cefc826658fbb6b48efc60ee1f7729affeda583d8db14"
+                    "default": "ghcr.io/charlotteanne/differential-analysis/advanced-model@sha256:6555b85f0de65ad43a31968014e8f2913b005dfeaf67fbd4a372199068f0a611"
                 },
                 "module_test": {
                     "name": "Module test",
