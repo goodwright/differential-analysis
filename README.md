@@ -130,4 +130,4 @@ To raise any issues or comments with the pipeline you can (in order of preferenc
 
 ## Paired models and module tests
 
-An optional `analysis_mode=design_contrasts` runs explicit limma-voom contrasts and CAMERA module tests. See [advanced-model documentation](docs/advanced-model.md) for inputs, assumptions, output audit and Flow registration requirements. The default remains the existing pairwise DESeq2 workflow.
+An optional `analysis_mode=design_contrasts` runs explicit DESeq2 designs and numeric interaction contrasts. An optional `module_test=camera` runs a separate limma-voom CAMERA test of fixed modules. See [advanced-model documentation](docs/advanced-model.md) for inputs, assumptions, output audit and Flow registration requirements. The default remains the existing pairwise DESeq2 workflow.

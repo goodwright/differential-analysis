@@ -54,16 +54,17 @@ write.csv(ct,file.path(out,"contrasts.csv"),row.names=FALSE)
 writeLines(c(paste(c("translation_module","synthetic",paste0("g",1:30)),collapse="\t"),paste(c("RNA_only_module","synthetic",paste0("g",31:60)),collapse="\t")),file.path(out,"modules.gmt"))
 writeLines(raw$gene_id,file.path(out,"universe.txt"))
 opt <- list(design_formula=formula,numeric_covariates="poly,ko1,ko9",seed=20261002,
- count_matrix_type="raw_counts",filter_column="fraction",filter_level="input",min_cpm=1,min_samples=2,
+ deseq_fit_type="parametric",deseq_sf_type="ratio",count_matrix_type="raw_counts",filter_column="fraction",filter_level="input",min_cpm=1,min_samples=2,
  gene_set_id_column="gene_id",use_gene_sets=TRUE,use_universe=TRUE,min_set_size=10,max_set_size=500,set_adjust_method="BH")
 write_json(opt,file.path(out,"options.json"),auto_unbox=TRUE,pretty=TRUE)
-run <- function(destination, counts_file="counts.tsv", options="options.json") {
+run <- function(destination, counts_file="counts.tsv", options="options.json", runner="camera.R", expected_success=TRUE) {
  dir.create(file.path(out,destination),showWarnings=FALSE)
  old <- setwd(file.path(out,destination));on.exit(setwd(old))
- paths <- c(file.path(root,"lib/advanced_model/run.R"),file.path(out,c(options,counts_file,"samples.csv","contrasts.csv","modules.gmt","universe.txt")))
+ paths <- c(file.path(root,paste0("lib/advanced_model/",runner)),file.path(out,c(options,counts_file,"samples.csv","contrasts.csv","modules.gmt","universe.txt")))
  result <- system2(file.path(R.home("bin"),"Rscript"),shQuote(paths),stdout="run.log",stderr="run.log")
+ if (!expected_success) return(list(status=result,log=paste(readLines("run.log"),collapse="\n")))
  if (result != 0) stop(paste(readLines("run.log"),collapse="\n"))
- read_table("camera.results.tsv")
+ read_table(if (runner=="camera.R") "camera.results.tsv" else "average.deseq2.results.tsv")
 }
 result <- run("result")
 get <- function(set,contrast) result[result$gene_set==set & result$contrast==contrast,,drop=FALSE]
@@ -71,23 +72,63 @@ a <- get("translation_module","average");b <- get("translation_module","reverse"
 stopifnot(a$excess_log2_change < -.7,a$PValue < .01,a$Direction == "Down")
 stopifnot(abs(n$excess_log2_change) < .3)
 stopifnot(abs(a$excess_log2_change+b$excess_log2_change)<1e-10,b$Direction=="Up",b$PValue<.01)
-gene_a <- read_table(file.path(out,"result/average.limma.results.tsv"))
-gene_b <- read_table(file.path(out,"result/reverse.limma.results.tsv"))
-stopifnot(max(abs(gene_a$P.Value-gene_b$P.Value))<1e-10)
+gene_a <- run("deseq_result", runner="run.R")
+gene_b <- read_table(file.path(out,"deseq_result/reverse.deseq2.results.tsv"))
+stopifnot(max(abs(gene_a$pvalue-gene_b$pvalue),na.rm=TRUE)<1e-10,
+          max(abs(gene_a$log2FoldChange+gene_b$log2FoldChange),na.rm=TRUE)<1e-8)
+stopifnot(mean(gene_a$log2FoldChange[1:30]) < -.7,abs(mean(gene_a$log2FoldChange[31:60]))<.3)
+stopifnot(all(gene_a$CI95_low <= gene_a$log2FoldChange),all(gene_a$CI95_high >= gene_a$log2FoldChange))
+stopifnot(isTRUE(all.equal(gene_a$padj,p.adjust(gene_a$pvalue,"BH"))))
+# Independent DESeq2 API reference: reconstruct the model from the formula, then compare numeric contrasts.
+suppressPackageStartupMessages(library(DESeq2))
+s_ref <- s[order(s$sample_id),];s_ref$pair <- factor(s_ref$pair);rownames(s_ref)<-s_ref$sample_id
+ref_counts <- counts[,s_ref$sample_id];rownames(ref_counts)<-raw$gene_id
+ref <- DESeqDataSetFromMatrix(ref_counts,s_ref,design=as.formula(formula))
+ref <- DESeq(ref,betaPrior=FALSE,minReplicatesForReplace=Inf,quiet=TRUE)
+ref_weights <- rep(0,length(resultsNames(ref)))
+ref_weights[match(c("poly.ko1","poly.ko9"),resultsNames(ref))]<-.5
+stopifnot(sum(ref_weights)==1)
+ref_result <- results(ref,contrast=ref_weights,independentFiltering=FALSE)
+stopifnot(isTRUE(all.equal(gene_a$log2FoldChange,ref_result$log2FoldChange,tolerance=1e-6)),
+          isTRUE(all.equal(gene_a$pvalue,ref_result$pvalue,tolerance=1e-6)))
+# Changing the module universe must not change DESeq2 gene effects or its multiple-test family.
+writeLines(raw$gene_id[1:300],file.path(out,"universe.txt"))
+restricted <- run("restricted_deseq",runner="run.R")
+stopifnot(isTRUE(all.equal(gene_a,restricted,tolerance=1e-10)))
+writeLines(raw$gene_id,file.path(out,"universe.txt"))
+# DESeq2 remains available without any module request.
+no_modules <- opt;no_modules$use_gene_sets<-FALSE;no_modules$use_universe<-FALSE
+write_json(no_modules,file.path(out,"no-modules.json"),auto_unbox=TRUE)
+no_module_result <- run("no_module_deseq",options="no-modules.json",runner="run.R")
+stopifnot(isTRUE(all.equal(gene_a,no_module_result,tolerance=1e-10)))
+# Reject ambiguous fractional raw counts; explicitly declared tximport estimates are rounded and audited.
+fractional <- raw;fractional[, -1]<-fractional[, -1]+.25
+write_tsv(fractional,file.path(out,"fractional.tsv"))
+rejected <- run("fractional_rejected",counts_file="fractional.tsv",runner="run.R",expected_success=FALSE)
+stopifnot(rejected$status!=0,grepl("Fractional counts",rejected$log))
+scaled <- opt;scaled$count_matrix_type<-"length_scaled_counts"
+write_json(scaled,file.path(out,"scaled-options.json"),auto_unbox=TRUE)
+scaled_result <- run("scaled_deseq",counts_file="fractional.tsv",options="scaled-options.json",runner="run.R")
+stopifnot(isTRUE(all.equal(gene_a,scaled_result,tolerance=1e-10)))
+scaled_audit <- fromJSON(file.path(out,"scaled_deseq/model_audit.json"))
+stopifnot(scaled_audit$rounding$fractional_entries==length(counts),scaled_audit$rounding$maximum_absolute_change==.25)
 stopifnot(isTRUE(all.equal(result$adjusted_p,p.adjust(result$PValue,"BH"))))
 # Count-column order must not change the result.
 write_tsv(raw[,c(1,rev(seq.int(2,ncol(raw))))],file.path(out,"shuffled.tsv"))
 shuffled <- run("shuffled_result","shuffled.tsv")
 stopifnot(isTRUE(all.equal(result,shuffled,tolerance=1e-10)))
+shuffled_genes <- run("shuffled_deseq",counts_file="shuffled.tsv",runner="run.R")
+stopifnot(isTRUE(all.equal(gene_a,shuffled_genes,tolerance=1e-10)))
 # Gene-set coverage failure is explicit rather than a spurious favorable test.
 coverage_opts <- opt;coverage_opts$min_set_size <- 40
 write_json(coverage_opts,file.path(out,"coverage-options.json"),auto_unbox=TRUE)
 dir.create(file.path(out,"coverage_result"),showWarnings=FALSE)
 old <- setwd(file.path(out,"coverage_result"))
-paths <- c(file.path(root,"lib/advanced_model/run.R"),file.path(out,c("coverage-options.json","counts.tsv","samples.csv","contrasts.csv","modules.gmt","universe.txt")))
+paths <- c(file.path(root,"lib/advanced_model/camera.R"),file.path(out,c("coverage-options.json","counts.tsv","samples.csv","contrasts.csv","modules.gmt","universe.txt")))
 status <- system2(file.path(R.home("bin"),"Rscript"),shQuote(paths),stdout="run.log",stderr="run.log")
 stopifnot(status==0,file.exists("camera.not_tested.tsv"),!file.exists("camera.results.tsv"));setwd(old)
 write_json(list(status="passed",validation_rejection_cases=checks,synthetic_average_excess=a$excess_log2_change,
  synthetic_average_p=a$PValue,RNA_only_excess=n$excess_log2_change,
- verified=c("paired interaction recovers simulated change","total-RNA-only nuisance separated","reverse contrast flips direction and preserves gene-level p-values","count columns reordered safely","module correction across all set/contrast tests","insufficient module coverage recorded")),file.path(out,"test-summary.json"),auto_unbox=TRUE,pretty=TRUE)
+ deseq_average_effect=mean(gene_a$log2FoldChange[1:30]),deseq_RNA_only_effect=mean(gene_a$log2FoldChange[31:60]),
+ verified=c("DESeq2 matches independent formula-based API fit","module universe does not restrict DESeq2 tests","DESeq2 runs without modules","explicit estimated-count rounding is audited; fractional raw counts rejected","paired interaction recovers simulated change","total-RNA-only nuisance separated","reverse contrast flips direction and preserves gene-level p-values","count columns reordered safely","module correction across all set/contrast tests","insufficient module coverage recorded")),file.path(out,"test-summary.json"),auto_unbox=TRUE,pretty=TRUE)
 cat(readLines(file.path(out,"test-summary.json")),sep="\n")

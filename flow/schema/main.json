@@ -269,7 +269,7 @@
             }
         },
         "advanced_model": {
-            "name": "Paired models and module tests",
+            "name": "DESeq2 designs and separate module tests",
             "advanced": true,
             "description": "Optional advanced mode; the default pairwise workflow is unchanged.",
             "properties": {
@@ -278,7 +278,7 @@
                     "type": "string",
                     "valid": ["pairwise", "design_contrasts"],
                     "default": "pairwise",
-                    "description": "Pairwise DESeq2 or an explicit limma-voom model with contrasts and optional CAMERA module testing.",
+                    "description": "Pairwise DESeq2, or explicit DESeq2 designs and numeric contrasts with an optional separate CAMERA module test.",
                     "required": false
                 },
                 "design_formula": {
@@ -306,14 +306,14 @@
                     "name": "Fixed gene modules",
                     "type": "file",
                     "pattern": "gmt",
-                    "description": "Optional fixed GMT gene sets. CAMERA estimates within-set correlation.",
+                    "description": "Fixed GMT modules, required with module_test=camera; no modules are chosen from observed differential results.",
                     "required": false
                 },
                 "gene_universe": {
                     "name": "Competitive gene universe",
                     "type": "file",
                     "pattern": "txt",
-                    "description": "Optional one gene ID per line: all module members plus prespecified background. No automatic matching or outcome-based background selection.",
+                    "description": "Optional prespecified module-plus-background gene IDs for CAMERA only. Does not restrict DESeq2 gene tests or normalization.",
                     "required": false
                 },
                 "gene_set_id_column": {
@@ -329,7 +329,7 @@
                     "type": "string",
                     "valid": ["raw_counts", "length_scaled_counts"],
                     "default": "raw_counts",
-                    "description": "Raw integer counts or explicitly prepared tximport lengthScaledTPM counts; never TPM or log expression.",
+                    "description": "raw_counts must be integer. Explicit tximport lengthScaledTPM count estimates use length_scaled_counts; DESeq2 rounds these with a recorded rounding audit, CAMERA uses unrounded estimates. TPM/log expression is not supported.",
                     "required": false
                 },
                 "filter_column": {
@@ -391,6 +391,28 @@
                     "type": "string",
                     "description": "Built container pinned by digest; required for container execution. Register only after building and testing the image.",
                     "required": false
+                },
+                "module_test": {
+                    "name": "Module test",
+                    "type": "string",
+                    "default": "none",
+                    "valid": ["none", "camera"],
+                    "description": "Explicit optional limma-voom CAMERA process using the same design and contrasts. Requires fixed GMT gene sets. This is separate from DESeq2 gene-level testing.",
+                    "required": false
+                },
+                "design_deseq_fit_type": {
+                    "name": "Design DESeq2 dispersion fit",
+                    "type": "string",
+                    "default": "parametric",
+                    "valid": ["parametric", "local", "mean"],
+                    "required": false
+                },
+                "design_deseq_sf_type": {
+                    "name": "Design DESeq2 size-factor method",
+                    "type": "string",
+                    "default": "ratio",
+                    "valid": ["ratio", "poscounts"],
+                    "required": false
                 }
             }
         }
@@ -437,6 +459,48 @@
             "description": "GSEA output plots",
             "filetype": "pdf",
             "process": "R_GSEA"
+        },
+        {
+            "name": "DESeq2 design audit",
+            "process": "R_DESIGN_DESEQ2",
+            "filetype": "json",
+            "pattern": "model_audit.json",
+            "description": "Model assumptions, sample order, filters and parameters"
+        },
+        {
+            "name": "DESeq2 design tables",
+            "process": "R_DESIGN_DESEQ2",
+            "filetype": "tsv",
+            "pattern": ".*\\.tsv$",
+            "description": "Results and reproducibility tables"
+        },
+        {
+            "name": "DESeq2 design fit",
+            "process": "R_DESIGN_DESEQ2",
+            "filetype": "rds",
+            "pattern": "fitted_model.rds",
+            "description": "Saved fitted object and numeric contrasts"
+        },
+        {
+            "name": "CAMERA module audit",
+            "process": "R_CAMERA_MODULE",
+            "filetype": "json",
+            "pattern": "model_audit.json",
+            "description": "Model assumptions, sample order, filters and parameters"
+        },
+        {
+            "name": "CAMERA module tables",
+            "process": "R_CAMERA_MODULE",
+            "filetype": "tsv",
+            "pattern": ".*\\.tsv$",
+            "description": "Results and reproducibility tables"
+        },
+        {
+            "name": "CAMERA module fit",
+            "process": "R_CAMERA_MODULE",
+            "filetype": "rds",
+            "pattern": "fitted_model.rds",
+            "description": "Saved fitted object and numeric contrasts"
         }
     ]
 }
